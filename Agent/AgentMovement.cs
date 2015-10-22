@@ -4,6 +4,7 @@ using System.Collections;
 public class AgentMovement : MonoBehaviour {
 
 	public float speed;
+	public float wiggle;
 
 	Rigidbody agentRigidbody;
 	NavMeshAgent navMesh;
@@ -51,7 +52,7 @@ public class AgentMovement : MonoBehaviour {
 		agentRigidbody.velocity = transform.forward * speed * Time.fixedDeltaTime;
 	
 		// Rotation de l'agent en Y entre -10 et +10
-		Vector3 rotation = new Vector3(0,Random.Range(-10,10), 0) + agentRigidbody.rotation.eulerAngles;
+		Vector3 rotation = new Vector3(0,Random.Range(-wiggle,wiggle), 0) + agentRigidbody.rotation.eulerAngles;
 		agentRigidbody.rotation = Quaternion.Euler(rotation);
 	}
 }

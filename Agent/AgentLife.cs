@@ -7,6 +7,8 @@ public class AgentLife : MonoBehaviour {
 	public float startingLife;
 	public float currentLife;
 
+	public bool duplicable = false;
+
 	public GameObject canvasPrefab;
 	public float offsetZ;
 
@@ -44,7 +46,7 @@ public class AgentLife : MonoBehaviour {
 
 	/** Permet de dupliquer l'agent s'il possède toute sa vie et en divant sa vie par 2 */
 	void Duplicate(){
-		if(currentLife == startingLife){
+		if(currentLife == startingLife && duplicable){
 			GameObject cellInstance = Instantiate(this.gameObject, transform.position, Quaternion.identity) as GameObject;
 			AgentLife cellInstanceLife = cellInstance.GetComponent<AgentLife>();
 			cellInstanceLife.currentLife = startingLife / 2f;

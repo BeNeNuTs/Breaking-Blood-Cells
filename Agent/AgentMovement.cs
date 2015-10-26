@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AgentMovement : MonoBehaviour {
 
@@ -9,37 +10,27 @@ public class AgentMovement : MonoBehaviour {
 	public string tagEnemy;
 
 	Rigidbody2D agentRigidbody;
-	bool findEnnemy = false;
 
-
-	[HideInInspector]
-	public Transform target;
+	//[HideInInspector]
+	public List<GameObject> targets;
 
 	// Use this for initialization
 	void Start () {
 		agentRigidbody = GetComponent<Rigidbody2D>();
-		target = null;
+		targets = new List<GameObject>();
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
-		if(other.CompareTag(tagEnemy)){
-			findEnnemy = true;
-			if(target != null){
-				if(Vector2.Distance(transform.position, other.transform.position) < Vector2.Distance(transform.position, target.position)){
-					target = other.transform;
-				}
-			}else{
-				target = other.transform;
+		if(other.CompareTag(tagEnemy) && !other.isTrigger){
+			if(!targets.Contains(other.gameObject)){
+				targets.Add(other.gameObject);
 			}
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D other){
-		if(other.CompareTag(tagEnemy) && findEnnemy){
-			if(other.gameObject == target.gameObject){
-				findEnnemy = false;
-				target = null;
-			}
+		if(other.CompareTag(tagEnemy) && !other.isTrigger){
+			targets.Remove(other.gameObject);
 		}
 	}
 
@@ -53,24 +44,28 @@ public class AgentMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(findEnnemy){
-			GoToEnnemy ();
+		if(targets.Count > 0){
+			GoToEnemy ();
 		}else{
 			Wiggle ();
 		}
 	}
 
-	void GoToEnnemy(){
-		if(target != null){
-			Vector3 diff = target.transform.position - transform.position;
+	void GoToEnemy(){
+		UpdateList();
+
+		if(targets.Count > 0){
+			GameObject closest = GetClosestTarget();
+			if(closest == null){
+				return;
+			}
+
+			Vector3 diff = closest.transform.position - transform.position;
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
-		}else{
-			target = null;
-			findEnnemy = false;
 		}
 	}
 
@@ -78,5 +73,30 @@ public class AgentMovement : MonoBehaviour {
 		// Faire avancer l'agent
 		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+	}
+
+	public void UpdateList(){
+		for(int i = 0 ; i < targets.Count ; i++){
+			if(targets[i] == null){
+				targets.RemoveAt(i);
+			}
+		}
+	}
+
+	public GameObject GetClosestTarget(){
+		if(targets.Count == 0){
+			return null;
+		}
+
+		GameObject closest;
+		closest = targets[0];
+		
+		for(int i = 1 ; i < targets.Count ; i++){
+			if(Vector3.Distance(transform.position, targets[i].transform.position) < Vector3.Distance(transform.position, closest.transform.position)){
+				closest = targets[i];
+			}
+		}
+
+		return closest;
 	}
 }

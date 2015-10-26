@@ -21,23 +21,28 @@ public class AgentAttack : MonoBehaviour {
 	{
 		timer += Time.deltaTime;
 		
-		if(timer >= timeBetweenAttacks && myMovement.target != null && myLife.currentLife > 0)
+		if(timer >= timeBetweenAttacks && myMovement.targets.Count > 0 && myLife.currentLife > 0)
 		{
-			if(Vector2.Distance(myMovement.target.position, transform.position) < myMovement.stoppingDistance){
-				Attack (); 
-			}
+			myMovement.UpdateList();
+			GameObject closest = myMovement.GetClosestTarget();
+			Attack (closest); 
 		}
 	}
 	
 	
-	void Attack ()
+	void Attack (GameObject closest)
 	{
+		if(Vector3.Distance(closest.transform.position, transform.position) > myMovement.stoppingDistance){
+			return;
+		}
+
+		if(closest == null){
+			return;
+		}
+
 		timer = 0f;
 
-		if(myMovement.target == null)
-			return;
-
-		AgentLife enemyLife = myMovement.target.GetComponent<AgentLife>();
+		AgentLife enemyLife = closest.GetComponent<AgentLife>();
 
 		if(enemyLife.currentLife > 0)
 		{

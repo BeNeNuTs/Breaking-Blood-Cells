@@ -54,7 +54,7 @@ public class AgentMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(findEnnemy){
-			GoToEnemy ();
+			GoToEnnemy ();
 		}else{
 			Wiggle ();
 		}

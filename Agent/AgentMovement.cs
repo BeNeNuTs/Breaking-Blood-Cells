@@ -5,32 +5,27 @@ public class AgentMovement : MonoBehaviour {
 
 	public float speed;
 	public float wiggle;
+	public float stoppingDistance;
 	public string tagEnemy;
 
-	Rigidbody agentRigidbody;
-	NavMeshAgent navMesh;
+	Rigidbody2D agentRigidbody;
+	bool findEnnemy = false;
+
 
 	[HideInInspector]
 	public Transform target;
-	bool findEnemy = false;
-
-
-	// TEST
-	public float turnSpeed = 90.0f;
-	public float turbulence = 10.0f;
 
 	// Use this for initialization
 	void Start () {
-		navMesh = GetComponent<NavMeshAgent>();
-		agentRigidbody = GetComponent<Rigidbody>();
+		agentRigidbody = GetComponent<Rigidbody2D>();
 		target = null;
 	}
 
-	void OnTriggerEnter(Collider other){
+	void OnTriggerEnter2D(Collider2D other){
 		if(other.CompareTag(tagEnemy)){
-			findEnemy = true;
+			findEnnemy = true;
 			if(target != null){
-				if(Vector3.Distance(transform.position, other.transform.position) < Vector3.Distance(transform.position, target.position)){
+				if(Vector2.Distance(transform.position, other.transform.position) < Vector2.Distance(transform.position, target.position)){
 					target = other.transform;
 				}
 			}else{
@@ -39,53 +34,49 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerExit(Collider other){
-		if(other.CompareTag(tagEnemy) && findEnemy){
+	void OnTriggerExit2D(Collider2D other){
+		if(other.CompareTag(tagEnemy) && findEnnemy){
 			if(other.gameObject == target.gameObject){
-				findEnemy = false;
+				findEnnemy = false;
 				target = null;
 			}
 		}
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		if(collision.contacts.Length > 0){
+		/*if(collision.contacts.Length > 0){
 			Vector3 reflect = Vector3.Reflect(transform.forward, collision.contacts[0].normal);
 			Vector3 direction = new Vector3(reflect.x, 0, reflect.z);
 			transform.LookAt(direction);
-		}
+		}*/
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
-		if(findEnemy){
+	void Update () {
+		if(findEnnemy){
 			GoToEnemy ();
 		}else{
 			Wiggle ();
 		}
 	}
 
-	void GoToEnemy(){
+	void GoToEnnemy(){
 		if(target != null){
-			navMesh.SetDestination(target.position);
+			Vector3 diff = target.transform.position - transform.position;
+			
+			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+
+			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 		}else{
 			target = null;
-			findEnemy = false;
+			findEnnemy = false;
 		}
 	}
 
 	void Wiggle(){
-
 		// Faire avancer l'agent
-		agentRigidbody.velocity = transform.forward * speed * Time.fixedDeltaTime;
-	
-		// Rotation de l'agent en Y entre -10 et +10
-		Vector3 rotation = new Vector3(0,Random.Range(-wiggle,wiggle), 0) + agentRigidbody.rotation.eulerAngles;
-		agentRigidbody.rotation = Quaternion.Euler(rotation);
-
-		/*Vector3 direction = transform.position + Random.insideUnitSphere * turbulence;
-		//direction.Normalize( );
-		transform.rotation = Quaternion.RotateTowards( transform.rotation, Quaternion.LookRotation( direction ), turnSpeed * Time.fixedDeltaTime );
-		transform.Translate( Vector3.forward * speed * Time.fixedDeltaTime );*/
+		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 }

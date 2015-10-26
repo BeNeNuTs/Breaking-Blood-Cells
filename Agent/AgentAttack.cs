@@ -8,7 +8,6 @@ public class AgentAttack : MonoBehaviour {
 	
 	AgentLife myLife;
 	AgentMovement myMovement;
-	NavMeshAgent navMesh;
 
 	float timer;
 	
@@ -16,7 +15,6 @@ public class AgentAttack : MonoBehaviour {
 	{
 		myLife = GetComponent<AgentLife>();
 		myMovement = GetComponent<AgentMovement>();
-		navMesh = GetComponent<NavMeshAgent>();
 	}
 	
 	void Update ()
@@ -25,7 +23,7 @@ public class AgentAttack : MonoBehaviour {
 		
 		if(timer >= timeBetweenAttacks && myMovement.target != null && myLife.currentLife > 0)
 		{
-			if(Vector3.Distance(myMovement.target.position, transform.position) < navMesh.stoppingDistance){
+			if(Vector2.Distance(myMovement.target.position, transform.position) < myMovement.stoppingDistance){
 				Attack (); 
 			}
 		}

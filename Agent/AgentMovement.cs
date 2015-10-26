@@ -10,14 +10,17 @@ public class AgentMovement : MonoBehaviour {
 	public string tagEnemy;
 
 	Rigidbody2D agentRigidbody;
+	Agent agent;
 
-	//[HideInInspector]
+	[HideInInspector]
 	public List<GameObject> targets;
 
 	// Use this for initialization
 	void Start () {
 		agentRigidbody = GetComponent<Rigidbody2D>();
 		targets = new List<GameObject>();
+
+		agent = GetComponent<Agent>();
 	}
 
 	void OnTriggerEnter2D(Collider2D other){
@@ -44,10 +47,10 @@ public class AgentMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(targets.Count > 0){
-			GoToEnemy ();
-		}else{
-			Wiggle ();
+		if(agent.state == Agent.WIGGLE){
+			Wiggle();
+		}else if(agent.state == Agent.GOTOENEMY){
+			GoToEnemy();
 		}
 	}
 
@@ -66,6 +69,14 @@ public class AgentMovement : MonoBehaviour {
 			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+
+			if(Vector3.Distance(closest.transform.position, transform.position) < stoppingDistance){
+				agent.state = Agent.ATTACK;
+				return;
+			}
+		}else{
+			agent.state = Agent.WIGGLE;
+			return;
 		}
 	}
 
@@ -73,6 +84,11 @@ public class AgentMovement : MonoBehaviour {
 		// Faire avancer l'agent
 		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+
+		if(targets.Count > 0){
+			agent.state = Agent.GOTOENEMY;
+			return;
+		}
 	}
 
 	public void UpdateList(){

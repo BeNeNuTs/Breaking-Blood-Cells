@@ -8,6 +8,7 @@ public class AgentAttack : MonoBehaviour {
 	
 	AgentLife myLife;
 	AgentMovement myMovement;
+	Agent agent;
 
 	float timer;
 	
@@ -15,28 +16,32 @@ public class AgentAttack : MonoBehaviour {
 	{
 		myLife = GetComponent<AgentLife>();
 		myMovement = GetComponent<AgentMovement>();
+		agent = GetComponent<Agent>();
 	}
 	
 	void Update ()
 	{
 		timer += Time.deltaTime;
-		
-		if(timer >= timeBetweenAttacks && myMovement.targets.Count > 0 && myLife.currentLife > 0)
-		{
-			myMovement.UpdateList();
-			GameObject closest = myMovement.GetClosestTarget();
-			Attack (closest); 
+
+		if(agent.state == Agent.ATTACK){
+			Attack();
 		}
 	}
 	
 	
-	void Attack (GameObject closest)
+	void Attack ()
 	{
-		if(Vector3.Distance(closest.transform.position, transform.position) > myMovement.stoppingDistance){
+		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0 || myLife.currentLife == 0)
+		{
+			agent.state = Agent.WIGGLE;
 			return;
 		}
 
+		myMovement.UpdateList();
+		GameObject closest = myMovement.GetClosestTarget();
+
 		if(closest == null){
+			agent.state = Agent.WIGGLE;
 			return;
 		}
 

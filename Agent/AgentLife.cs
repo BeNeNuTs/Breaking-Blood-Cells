@@ -10,7 +10,7 @@ public class AgentLife : MonoBehaviour {
 	public bool duplicable = false;
 
 	public GameObject canvasPrefab;
-	public float offsetZ;
+	public float offsetY;
 
 	private GameObject canvas;
 	private Image cellLife;
@@ -19,7 +19,7 @@ public class AgentLife : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		currentLife = startingLife;
-		canvas = Instantiate(canvasPrefab, posCanvas, Quaternion.Euler(new Vector3(-90,0,0))) as GameObject;
+		canvas = Instantiate(canvasPrefab, posCanvas, Quaternion.identity) as GameObject;
 		cellLife = canvas.GetComponentInChildren<Image>();
 		isDead = false;
 	}
@@ -103,7 +103,7 @@ public class AgentLife : MonoBehaviour {
 
 	Vector3 posCanvas { 
 		get{
-			return new Vector3(transform.position.x, transform.position.y, transform.position.z + offsetZ);
+			return new Vector3(transform.position.x, transform.position.y + offsetY, transform.position.z);
 		}
 	}
 

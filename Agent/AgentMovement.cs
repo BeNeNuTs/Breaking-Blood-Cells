@@ -9,12 +9,12 @@ public class AgentMovement : MonoBehaviour {
 	public float stoppingDistance;
 	public string tagEnemy;
 
-	Rigidbody2D agentRigidbody;
-
 	Agent agent;
 
 	[HideInInspector]
 	public List<GameObject> targets;
+	[HideInInspector]
+	public Rigidbody2D agentRigidbody;
 
 
 	// Use this for initialization
@@ -67,17 +67,17 @@ public class AgentMovement : MonoBehaviour {
 				return;
 			}
 
+			if(Vector3.Distance(closest.transform.position, transform.position) < stoppingDistance){
+				agent.state = Agent.ATTACK;
+				return;
+			}
+
 			Vector3 diff = closest.transform.position - transform.position;
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
-
-			if(Vector3.Distance(closest.transform.position, transform.position) < stoppingDistance){
-				agent.state = Agent.ATTACK;
-				return;
-			}
 		}else{
 			agent.state = Agent.WIGGLE;
 			return;
@@ -85,14 +85,13 @@ public class AgentMovement : MonoBehaviour {
 	}
 
 	void Wiggle(){
-		// Faire avancer l'agent
-		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
-		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
-
 		if(targets.Count > 0){
 			agent.state = Agent.GOTOENEMY;
 			return;
 		}
+		// Faire avancer l'agent
+		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
 	public void UpdateList(){

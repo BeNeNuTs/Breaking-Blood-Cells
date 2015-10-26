@@ -48,6 +48,8 @@ public class AgentAttack : MonoBehaviour {
 			return;
 		}
 
+		myMovement.agentRigidbody.velocity = Vector2.zero;
+
 		timer = 0f;
 
 		AgentLife enemyLife = closest.GetComponent<AgentLife>();

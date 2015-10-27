@@ -3,6 +3,8 @@ using System.Collections;
 
 public class BacteriaLife : AgentLife {
 
+	public GameObject ondePrefab;
+
 	float timer = 0f;
 	float timeMinToWait = 2f;
 	float timeMaxToWait = 5f;
@@ -12,7 +14,6 @@ public class BacteriaLife : AgentLife {
 	void Start(){
 		timeToWait = Random.Range(timeMinToWait, timeMaxToWait);
 	}
-
 	
 	// Update is called once per frame
 	protected override void Update () {
@@ -25,16 +26,28 @@ public class BacteriaLife : AgentLife {
 			AddLife(Mathf.FloorToInt(startingLife * percentageGainLife));
 
 			//Try to duplicate
-			if(UnitManager.NB_BACTERIES < UnitManager.MAX_BACTERIES){
-				if(agent.state == Agent.WIGGLE || agent.state == BacteriaAgent.FLEE){
-					Duplicate();
-				}
-			}
+			Duplicate();
 		}
 	}
 
-	protected override void Death(){
-		UnitManager.NB_BACTERIES--;
-		base.Death();
+	/** Permet de dupliquer l'agent s'il possède toute sa vie et en divant sa vie par 2 */
+	void Duplicate(){
+		if(UnitManager.NB_BACTERIES < UnitManager.MAX_BACTERIES){
+			if(agent.state == Agent.WIGGLE || agent.state == BacteriaAgent.FLEE){
+				if(currentLife == startingLife){
+					GameObject cellInstance = Instantiate(this.gameObject, transform.position, Quaternion.identity) as GameObject;
+					AgentLife cellInstanceLife = cellInstance.GetComponent<AgentLife>();
+					cellInstanceLife.currentLife = startingLife / 2f;
+					cellInstanceLife.UpdateLifeImage();
+					
+					currentLife = startingLife / 2f;
+					UpdateLifeImage();
+
+					Instantiate(ondePrefab, transform.position, Quaternion.identity);
+					
+					UnitManager.NB_BACTERIES++;
+				}
+			}
+		}
 	}
 }

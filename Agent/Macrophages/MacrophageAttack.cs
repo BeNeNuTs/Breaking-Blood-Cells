@@ -10,7 +10,7 @@ public class MacrophageAttack : AgentAttack {
 		}
 
 		if(enemyLife.currentLife < 0){
-			Debug.LogWarning("RESIDUS !");
+			//RESIDUS
 		}
 
 		return enemyLife;

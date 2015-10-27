@@ -12,8 +12,10 @@ public class AgentLife : MonoBehaviour {
 	public GameObject canvasPrefab;
 	public float offsetY;
 
-	private GameObject canvas;
-	private Image cellLife;
+	protected Agent agent;
+
+	GameObject canvas;
+	Image cellLife;
 	bool isDead;
 
 	// Use this for initialization
@@ -21,11 +23,12 @@ public class AgentLife : MonoBehaviour {
 		currentLife = startingLife;
 		canvas = Instantiate(canvasPrefab, posCanvas, Quaternion.identity) as GameObject;
 		cellLife = canvas.GetComponentInChildren<Image>();
+		agent = GetComponent<Agent>();
 		isDead = false;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	protected virtual void Update () {
 
 		// Pour pouvoir tester si les méthodes fonctionnent
 		if(Input.GetKeyDown(KeyCode.A)){
@@ -45,7 +48,7 @@ public class AgentLife : MonoBehaviour {
 	}
 
 	/** Permet de dupliquer l'agent s'il possède toute sa vie et en divant sa vie par 2 */
-	void Duplicate(){
+	protected void Duplicate(){
 		if(currentLife == startingLife && duplicable){
 			GameObject cellInstance = Instantiate(this.gameObject, transform.position, Quaternion.identity) as GameObject;
 			AgentLife cellInstanceLife = cellInstance.GetComponent<AgentLife>();
@@ -54,7 +57,23 @@ public class AgentLife : MonoBehaviour {
 
 			currentLife = startingLife / 2f;
 			UpdateLifeImage();
+
+			UnitManager.NB_BACTERIES++;
 		}
+	}
+
+	public void AddLife(int amount){
+		if(currentLife == startingLife){
+			return;
+		}
+
+		if(currentLife + amount < startingLife){
+			currentLife += amount;
+		}else{
+			currentLife = startingLife;
+		}
+
+		UpdateLifeImage();
 	}
 
 	/** Inflige des dégats à l'agent */
@@ -80,7 +99,7 @@ public class AgentLife : MonoBehaviour {
 	}
 
 	/** Met à jour la barre de vie de l'agent */
-	void UpdateLifeImage(){
+	protected void UpdateLifeImage(){
 		if(cellLife.enabled == false){
 			cellLife.enabled = true;
 		}
@@ -94,7 +113,7 @@ public class AgentLife : MonoBehaviour {
 		canvas.transform.position = posCanvas;
 	}
 
-	void Death ()
+	protected virtual void Death ()
 	{
 		isDead = true;
 		Destroy(canvas);

@@ -32,20 +32,20 @@ public class AgentAttack : MonoBehaviour {
 	}
 	
 	
-	void Attack ()
+	protected virtual AgentLife Attack ()
 	{
 		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0 || myLife.currentLife == 0)
 		{
 			agent.state = Agent.WIGGLE;
-			return;
+			return null;
 		}
 
-		myMovement.UpdateList();
-		GameObject closest = myMovement.GetClosestTarget();
+		myMovement.UpdateList(myMovement.targets);
+		GameObject closest = myMovement.GetClosestTarget(myMovement.targets);
 
 		if(closest == null){
 			agent.state = Agent.WIGGLE;
-			return;
+			return null;
 		}
 
 		myMovement.agentRigidbody.velocity = Vector2.zero;
@@ -58,5 +58,7 @@ public class AgentAttack : MonoBehaviour {
 		{
 			enemyLife.TakeDamage (attackDamage);
 		}
+
+		return enemyLife;
 	}
 }

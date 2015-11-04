@@ -5,26 +5,39 @@ public class ClickToControl : MonoBehaviour {
 
 	public bool playerControl = false;
 	public GameObject characterToControl;
+	public GameObject characterSprite;
+	public GameObject selectedSprite;
 
 	public void ControlCell()
 	{
 
 		Debug.Log ("Click");
 
-		if (GameManager.CellControlled != null) 
+	
+		foreach(GameObject go in GameObject.FindGameObjectsWithTag("Selection"))
 		{
-			//GameManager.CellControlled.GetComponent<PlayerControl> ().playerControl = false;
-			GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = true;
+			go.GetComponent<SpriteRenderer>().enabled = false;
 		}
 
+
 		GameManager.CellControlled = characterToControl;
-		PlayerController.DefineNewDestination (Vector2.zero);//GameManager.CellControlled.GetComponent<Rigidbody2D>().position);
+
+		selectedSprite.GetComponent<SpriteRenderer> ().enabled = true;
+
+		//On désactive le mouvement de l'agent
 		characterToControl.GetComponent<Rigidbody2D> ().velocity = new Vector2 (0, 0);
 		characterToControl.GetComponent<AgentMovement> ().enabled = false;
+		//characterToControl.GetComponent<MoveToPoint> ().enabled = true;
+		characterToControl.GetComponent<MoveToPoint> ().DefineNewDestination (characterToControl.GetComponent<Rigidbody2D>().position);
 
 		InputManager.mode = InputManager.InputMode.Controlling;
 
 
+	}
+
+	void OnDestroy()
+	{
+		GameManager.CellControlled = null;
 	}
 
 

@@ -29,6 +29,17 @@ public class RaycastManager : MonoBehaviour {
 		}
 	}
 
+	public static GameObject RaycastAttackEnemy()
+	{
+		RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000, LayerMask.GetMask("Enemy"));
+		if (hit) 
+		{
+			return hit.collider.gameObject;
+		}
+
+		return null;
+	}
+
 	public static void RaycastMovement()
 	{
 

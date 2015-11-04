@@ -2,16 +2,19 @@
 using System.Collections;
 
 public class InputManager : MonoBehaviour {
-
+	
 
 	public enum InputMode
 	{
 		Default,
-		Controlling
+		Controlling,
+		Attacking
 	}
 
 	public static InputMode mode = InputMode.Default;
-	
+
+	public static GameObject selection;
+	public static GameObject playerTarget;
 
 	/*Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
          diff.Normalize();
@@ -20,25 +23,70 @@ public class InputManager : MonoBehaviour {
          transform.rotation = Quaternion.Euler(0f, 0f, rot_z);*/
 
 
-	// Update is called once per frame
+	void Start()
+	{
+		selection = GameObject.FindGameObjectWithTag ("Selection");
+	}
+
 	void Update () 
 	{
+		
+	
+
+
+		if (Input.GetButtonDown ("Fire1")) {
+			RaycastManager.RaycastControl ();
+		}
+
+		if (GameManager.CellControlled == null) 
+		{
+			mode = InputMode.Default;
+			return;
+		}
+
+		if (Input.GetButtonDown ("Fire2")) {
+			playerTarget = RaycastManager.RaycastAttackEnemy ();
+			GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = false;
+			GameManager.CellControlled.GetComponent<MoveToPoint> ().DefineNewDestination (Camera.main.ScreenToWorldPoint (Input.mousePosition));
+			if (playerTarget != null) {
+				mode = InputMode.Attacking;
+			}
+			else
+			{
+				mode = InputMode.Controlling;
+			}
+			
+		}
+
+
 		switch (mode) {
-		case (InputMode.Default):
-			if (Input.GetButtonDown ("Fire1")) {
-				RaycastManager.RaycastControl ();
+		
+		case (InputMode.Attacking):
+
+
+			if(playerTarget == null)
+			{
+				GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = false;
+				mode = InputMode.Controlling;
+				break;
 			}
 
-			break;
-		case (InputMode.Controlling) :
-			if (Input.GetButtonDown ("Fire1")) {
-				RaycastManager.RaycastControl ();
-				PlayerController.DefineNewDestination(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-			}
+			GameManager.CellControlled.GetComponent<MoveToPoint> ().DefineNewDestination (playerTarget.GetComponent<Rigidbody2D> ().position);
 
+			if (Vector2.Distance (GameManager.CellControlled.GetComponent<Rigidbody2D> ().position, playerTarget.GetComponent<Rigidbody2D> ().position) < 10) {
+				GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = true;
+				GameManager.CellControlled.GetComponent<MoveToPoint> ().enabled = false;
+
+
+			}
+		                    
 			break;
+		
+		
+		//case (InputMode.Attacking)
+		}
 		}
 
 	
-	}
+
 }

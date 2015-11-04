@@ -4,6 +4,7 @@ using System.Collections;
 public class GameManager : MonoBehaviour 
 {
 	public static GameObject CellControlled;
+	public static GameObject Selection;
 
 	// Use this for initialization
 	void Start () {

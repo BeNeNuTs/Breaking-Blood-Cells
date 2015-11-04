@@ -49,6 +49,7 @@ public class AgentLife : MonoBehaviour {
 		if(currentLife == startingLife && duplicable){
 			GameObject cellInstance = Instantiate(this.gameObject, transform.position, Quaternion.identity) as GameObject;
 			AgentLife cellInstanceLife = cellInstance.GetComponent<AgentLife>();
+			cellInstance.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 			cellInstanceLife.currentLife = startingLife / 2f;
 			cellInstanceLife.UpdateLifeImage();
 
@@ -67,7 +68,8 @@ public class AgentLife : MonoBehaviour {
 		StartCoroutine("IsHit");
 		
 		currentLife -= amount;
-		
+
+
 		ShowDamage(amount);
 		
 		if(currentLife <= 0)
@@ -97,8 +99,10 @@ public class AgentLife : MonoBehaviour {
 	void Death ()
 	{
 		isDead = true;
+
 		Destroy(canvas);
 		Destroy(this.gameObject);
+
 	}
 
 	Vector3 posCanvas { 

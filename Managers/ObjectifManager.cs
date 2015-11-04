@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class ObjectifManager : MonoBehaviour {
 	
@@ -21,50 +22,38 @@ public class ObjectifManager : MonoBehaviour {
 	void updateGoal(int label){
 		if(objectifCourant.tableDesObjectifs.ContainsKey(label)){
 			int tmp = 0;
-			switch(label){
-			case 0:
+			if(label == 0 || label == 1 || label == 3 || label == 4 || label == 6){
 				tmp = (int) objectifCourant.tableDesObjectifs[label];
 				--tmp;
 				if(tmp != 0)
 					objectifCourant.tableDesObjectifs[label] = tmp;
 				else
 					objectifCourant.tableDesObjectifs.Remove(label);
-
+				
 				//TODO : isComplete
-				break;
-			case 1:
-				tmp = (int) objectifCourant.tableDesObjectifs[label];
-				--tmp;
-				if(tmp != 0)
-					objectifCourant.tableDesObjectifs[label] = tmp;
-				else
-					objectifCourant.tableDesObjectifs.Remove(label);
-
-				//TODO : isComplete
-				break;
-			case 2:
-				//TODO : isComplete
-				break;
-			case 3:
-				//TODO : isComplete
-				break;
-			case 4:
-				//TODO : isComplete
-				break;
-			case 5:
-				//TODO : isComplete
-				break;
-			case 6:
-				//TODO : isComplete
-				break;
-			default:
-				break;
+			} else if(label == 2){
+				
 			}
 		}
 	}
 
-	// Charge un fichier XML dans l'objectif courant
+	// Charge l'objectif id du fichier XML au chemin path dans l'objectif courant
 	void load(string path, int id){
-		XmlTextReader myXmlTextReader;
+		int tag = 0;
+		objectifCourant.clear ();
+		XmlTextReader myXmlTextReader = new XmlTextReader (path);
+		while(myXmlTextReader.Read()){
+			if(myXmlTextReader.IsStartElement()){
+				if (int.Parse(myXmlTextReader.GetAttribute("id")) == id){
+					objectifCourant.description = myXmlTextReader.GetAttribute("description");
+					tag = int.Parse(myXmlTextReader.GetAttribute("tag"));
+					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6){
+						objectifCourant.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
+					} else if(tag == 2){
+
+					}
+				}
+			}
+		}
 	}
 }

@@ -82,7 +82,7 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
-	void Wiggle(){
+	protected virtual void Wiggle(){
 		if(targets.Count > 0){
 			agent.state = Agent.GOTOENEMY;
 			return;

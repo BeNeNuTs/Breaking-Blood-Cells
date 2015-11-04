@@ -19,7 +19,6 @@ public class AgentAttack : MonoBehaviour {
 		myMovement = GetComponent<AgentMovement>();
 
 		agent = GetComponent<Agent>();
-
 	}
 	
 	void Update ()

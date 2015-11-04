@@ -9,7 +9,7 @@ public class AgentMovement : MonoBehaviour {
 	public float stoppingDistance;
 	public string tagEnemy;
 
-	Agent agent;
+	protected Agent agent;
 
 	[HideInInspector]
 	public List<GameObject> targets;
@@ -18,29 +18,27 @@ public class AgentMovement : MonoBehaviour {
 
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		agentRigidbody = GetComponent<Rigidbody2D>();
-
 		targets = new List<GameObject>();
-
 		agent = GetComponent<Agent>();
 	}
 
-	void OnTriggerEnter2D(Collider2D other){
-		if(other.CompareTag(tagEnemy) && !other.isTrigger){
+	protected virtual void OnTriggerEnter2D(Collider2D other){
+		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
 			if(!targets.Contains(other.gameObject)){
 				targets.Add(other.gameObject);
 			}
 		}
 	}
 
-	void OnTriggerExit2D(Collider2D other){
-		if(other.CompareTag(tagEnemy) && !other.isTrigger){
+	protected virtual void OnTriggerExit2D(Collider2D other){
+		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
 			targets.Remove(other.gameObject);
 		}
 	}
 
-	void OnCollisionEnter(Collision collision) {
+	void OnCollisionEnter2D(Collision2D collision) {
 		/*if(collision.contacts.Length > 0){
 			Vector3 reflect = Vector3.Reflect(transform.forward, collision.contacts[0].normal);
 			Vector3 direction = new Vector3(reflect.x, 0, reflect.z);
@@ -49,7 +47,7 @@ public class AgentMovement : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	protected virtual void Update () {
 		if(agent.state == Agent.WIGGLE){
 			Wiggle();
 		}else if(agent.state == Agent.GOTOENEMY){
@@ -57,12 +55,12 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
-	void GoToEnemy(){
+	protected virtual void GoToEnemy(){
 
-		UpdateList();
+		UpdateList(targets);
 
 		if(targets.Count > 0){
-			GameObject closest = GetClosestTarget();
+			GameObject closest = GetClosestTarget(targets);
 			if(closest == null){
 				return;
 			}
@@ -84,7 +82,7 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
-	void Wiggle(){
+	protected virtual void Wiggle(){
 		if(targets.Count > 0){
 			agent.state = Agent.GOTOENEMY;
 			return;
@@ -94,25 +92,25 @@ public class AgentMovement : MonoBehaviour {
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
-	public void UpdateList(){
-		for(int i = 0 ; i < targets.Count ; i++){
-			if(targets[i] == null){
-				targets.RemoveAt(i);
+	public void UpdateList(List<GameObject> list){
+		for(int i = 0 ; i < list.Count ; i++){
+			if(list[i] == null){
+				list.RemoveAt(i);
 			}
 		}
 	}
 
-	public GameObject GetClosestTarget(){
-		if(targets.Count == 0){
+	public GameObject GetClosestTarget(List<GameObject> list){
+		if(list.Count == 0){
 			return null;
 		}
 
 		GameObject closest;
-		closest = targets[0];
+		closest = list[0];
 		
-		for(int i = 1 ; i < targets.Count ; i++){
-			if(Vector3.Distance(transform.position, targets[i].transform.position) < Vector3.Distance(transform.position, closest.transform.position)){
-				closest = targets[i];
+		for(int i = 1 ; i < list.Count ; i++){
+			if(Vector3.Distance(transform.position, list[i].transform.position) < Vector3.Distance(transform.position, closest.transform.position)){
+				closest = list[i];
 			}
 		}
 

@@ -3,36 +3,38 @@ using System.Collections;
 
 public class MacrophageAttack : AgentAttack {
 
-	public enum TypeEnemy { BACTERIA, VIRUS }
+	public static bool bringResidus = false;
 
 	public GameObject residusPrefab;
-	public bool residus;
-
-	public TypeEnemy typeEnemy;
+	public Type.TypeResidus typeResidus;
 
 	GameObject residusGO;
 
 	void Start(){
-		residus = false;
+		bringResidus = false;
+		typeResidus = Type.TypeResidus.NONE;
 	}
 
 	protected override AgentLife Attack(){
 		AgentLife enemyLife = base.Attack();
+
 		if(enemyLife == null){
 			return enemyLife;
 		}
 
-		if(enemyLife.currentLife < 0 && !residus){
+		if(enemyLife.currentLife < 0 && !bringResidus){
 			residusGO = Instantiate(residusPrefab, transform.position, Quaternion.identity) as GameObject;
 			residusGO.transform.SetParent(transform);
 
 			if(enemyLife.name.Contains("Bacteria")){
-				typeEnemy = TypeEnemy.BACTERIA;
+				typeResidus = Type.TypeResidus.BACTERIA;
 			}else{
-				typeEnemy = TypeEnemy.VIRUS;
+				typeResidus = Type.TypeResidus.VIRUS;
 			}
 				
-			residus = true;
+			bringResidus = true;
+
+			agent.state = MacrophageAgent.BRING_RESIDUS;
 		}
 
 		return enemyLife;
@@ -40,6 +42,6 @@ public class MacrophageAttack : AgentAttack {
 
 	public void RemoveResidus(){
 		Destroy(residusGO);
-		residus = false;
+		typeResidus = Type.TypeResidus.NONE;
 	}
 }

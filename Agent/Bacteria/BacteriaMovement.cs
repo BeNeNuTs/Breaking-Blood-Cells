@@ -36,16 +36,24 @@ public class BacteriaMovement : AgentMovement {
 	}
 
 	protected override void GoToEnemy(){
-
 		UpdateList(bacterias);
 		UpdateList(targets);
 
-		if(bacterias.Count < NB_BACTERIAS_TO_ATTACK && targets.Count > 0){
-			agent.state = BacteriaAgent.FLEE;
-			return;
-		}
+		if(targets.Count > 0){
+			GameObject closest = GetClosestTarget(targets);
+			if(closest == null){
+				return;
+			}
 
-		base.GoToEnemy();
+			if(closest.name.Contains("Cell")){
+				base.GoToEnemy();
+			}else if(bacterias.Count < NB_BACTERIAS_TO_ATTACK){
+				agent.state = BacteriaAgent.FLEE;
+				return;
+			}
+		}else{
+			agent.state = Agent.WIGGLE;
+		}
 	}
 
 	void Flee(){

@@ -4,42 +4,50 @@ using System.Collections.Generic;
 
 public class MacrophageMovement : AgentMovement {
 
-	[HideInInspector]
-	public List<GameObject> LT;
-
 	MacrophageAttack agentAttack;
+	GameObject LTAux;
 
 	void Start(){
 		agentAttack = GetComponent<MacrophageAttack>();
+		LTAux = GameObject.FindGameObjectWithTag("LTAux");
 	}
 
-	protected override void OnTriggerEnter2D(Collider2D other){
-		base.OnTriggerEnter2D(other);
-		
-		if(other.CompareTag(gameObject.tag) && other.name.Contains("LT") && other.GetType() == typeof(BoxCollider2D)){
-			if(!LT.Contains(other.gameObject)){
-				LT.Add(other.gameObject);
-			}
-		}
-	}
-	
-	protected override void OnTriggerExit2D(Collider2D other){
-		base.OnTriggerExit2D(other);
-		
-		if(other.CompareTag(gameObject.tag) && other.name.Contains("LT") && other.GetType() == typeof(BoxCollider2D)){
-			LT.Remove(other.gameObject);
+	protected override void Update () {
+		base.Update();
+
+		if(agent.state == MacrophageAgent.BRING_RESIDUS){
+			BringResidus();
 		}
 	}
 
-	protected override void Wiggle(){
-		base.Wiggle();
+	void BringResidus(){
+		if(LTAux == null){
+			agentAttack.RemoveResidus();
+			agent.state = Agent.WIGGLE;
+			return;
+		}
 
-		if(agentAttack.residus){
-			UpdateList(LT);
-			if(LT.Count > 0){
-				//DONNER RESIDUS
-				agentAttack.RemoveResidus();
-			}
+		Vector3 diff = LTAux.transform.position - transform.position;
+		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+
+		if(Vector3.Distance(LTAux.transform.position, transform.position) < stoppingDistance){
+			//DONNER RESIDUS
+			GiveResidus();
+
+			transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 180f);
+			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+			agent.state = Agent.WIGGLE;
+			return;
+		}
+
+		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+	}
+
+	void GiveResidus(){
+		if(LTAux.GetComponent<LTAuxMovement>().TakeResidus(agentAttack.typeResidus)){
+			agentAttack.RemoveResidus();
 		}
 	}
+
 }

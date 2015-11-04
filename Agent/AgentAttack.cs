@@ -5,12 +5,12 @@ public class AgentAttack : MonoBehaviour {
 	
 	public float timeBetweenAttacks = 0.5f;
 	public int attackDamage = 10;
-	
+
+	protected Agent agent;
+
 	AgentLife myLife;
 	AgentMovement myMovement;
-
-	Agent agent;
-
+	
 	float timer;
 	
 	void Awake ()
@@ -21,7 +21,7 @@ public class AgentAttack : MonoBehaviour {
 		agent = GetComponent<Agent>();
 	}
 	
-	void Update ()
+	protected virtual void Update ()
 	{
 		timer += Time.deltaTime;
 

@@ -46,6 +46,7 @@ public class MacrophageMovement : AgentMovement {
 
 	void GiveResidus(){
 		if(LTAux.GetComponent<LTAuxMovement>().TakeResidus(agentAttack.typeResidus)){
+			MacrophageAttack.residuesDone = true;
 			agentAttack.RemoveResidus();
 		}
 	}

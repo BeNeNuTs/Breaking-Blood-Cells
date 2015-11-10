@@ -74,8 +74,8 @@ public class BacteriaMovement : AgentMovement {
 			Vector3 diff = closest.transform.position - transform.position;
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-			transform.rotation = Quaternion.Euler(0f, 0f, rot_z + 180);
-			
+
+			agentRigidbody.rotation = rot_z + 180f;
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 		}else{
 			agent.state = BacteriaAgent.WIGGLE;

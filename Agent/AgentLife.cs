@@ -30,7 +30,9 @@ public class AgentLife : MonoBehaviour {
 
 		// Pour pouvoir tester si les méthodes fonctionnent
 		if(Input.GetKeyDown(KeyCode.A)){
-			TakeDamage(10);
+			if(agent.state == MacrophageAgent.BRING_RESIDUS && name.Contains("Macrophage")){
+				TakeDamage(10);
+			}
 		}else if(Input.GetKeyDown(KeyCode.L)){
 			AddLife(10);
 		}

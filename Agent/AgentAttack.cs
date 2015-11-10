@@ -7,11 +7,10 @@ public class AgentAttack : MonoBehaviour {
 	public int attackDamage = 10;
 
 	protected Agent agent;
+	protected AgentMovement myMovement;
 
-	AgentLife myLife;
-	AgentMovement myMovement;
-	
-	float timer;
+	protected AgentLife myLife;
+	protected float timer;
 	
 	void Awake ()
 	{

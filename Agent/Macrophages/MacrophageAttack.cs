@@ -3,7 +3,8 @@ using System.Collections;
 
 public class MacrophageAttack : AgentAttack {
 
-	public static bool bringResidus = false;
+	public static bool bringResidues = false;
+	public static bool residuesDone = false;
 
 	public GameObject residusPrefab;
 	public Type.TypeResidus typeResidus;
@@ -11,7 +12,9 @@ public class MacrophageAttack : AgentAttack {
 	GameObject residusGO;
 
 	void Start(){
-		bringResidus = false;
+		bringResidues = false;
+		residuesDone = false;
+
 		typeResidus = Type.TypeResidus.NONE;
 	}
 
@@ -22,7 +25,8 @@ public class MacrophageAttack : AgentAttack {
 			return enemyLife;
 		}
 
-		if(enemyLife.currentLife < 0 && !bringResidus){
+		if(enemyLife.currentLife < 0 && !bringResidues && !residuesDone){
+
 			residusGO = Instantiate(residusPrefab, transform.position, Quaternion.identity) as GameObject;
 			residusGO.transform.SetParent(transform);
 
@@ -31,9 +35,8 @@ public class MacrophageAttack : AgentAttack {
 			}else{
 				typeResidus = Type.TypeResidus.VIRUS;
 			}
-				
-			bringResidus = true;
 
+			bringResidues = true;
 			agent.state = MacrophageAgent.BRING_RESIDUS;
 		}
 

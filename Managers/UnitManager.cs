@@ -18,9 +18,9 @@ public class UnitManager : MonoBehaviour {
 				NB_MACROPHAGES++;
 			}else if(cell.name.Contains("Cell")){
 				NB_CELLS++;
-			}else if(cell.name.Contains("LymphocyteT")){
+			}else if(cell.name.Contains("LT")){
 				NB_LYMPHOCYTES_T++;
-			}else if(cell.name.Contains("LymphocyteB")){
+			}else if(cell.name.Contains("LB")){
 				NB_LYMPHOCYTES_B++;
 			}
 		}
@@ -45,9 +45,9 @@ public class UnitManager : MonoBehaviour {
 			NB_MACROPHAGES--;
 		}else if(type.Contains("Cell")){
 			NB_CELLS--;
-		}else if(type.Contains("LymphocyteT")){
+		}else if(type.Contains("LT")){
 			NB_LYMPHOCYTES_T--;
-		}else if(type.Contains("LymphocyteB")){
+		}else if(type.Contains("LB")){
 			NB_LYMPHOCYTES_B--;
 		}else if(type.Contains("Bacteria")){
 			NB_BACTERIES--;

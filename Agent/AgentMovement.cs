@@ -10,6 +10,7 @@ public class AgentMovement : MonoBehaviour {
 	public string tagEnemy;
 
 	protected Agent agent;
+	protected float rotation;
 
 	[HideInInspector]
 	public List<GameObject> targets;
@@ -73,8 +74,11 @@ public class AgentMovement : MonoBehaviour {
 			Vector3 diff = closest.transform.position - transform.position;
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 
+			//rotation = rot_z;
+			//agentRigidbody.rotation = rotation;
+
+			agentRigidbody.rotation = rot_z;
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 		}else{
 			agent.state = Agent.WIGGLE;
@@ -82,12 +86,19 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
+	/*public float ChangeRotation(float rot){
+		rotation += rot;
+		return rotation;
+	}*/
+
 	protected virtual void Wiggle(){
 		if(targets.Count > 0){
 			agent.state = Agent.GOTOENEMY;
 			return;
 		}
 		// Faire avancer l'agent
+		//ChangeRotation(Random.Range(-wiggle,wiggle));
+		//agentRigidbody.rotation = rotation;
 		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}

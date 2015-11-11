@@ -28,6 +28,10 @@ public class AgentAttack : MonoBehaviour {
 			Attack();
 		}
 	}
+
+	public bool CheckTimer(){
+		return (timer > timeBetweenAttacks);
+	}
 	
 	
 	protected virtual AgentLife Attack ()

@@ -107,6 +107,8 @@ public class AgentMovement : MonoBehaviour {
 		for(int i = 0 ; i < list.Count ; i++){
 			if(list[i] == null){
 				list.RemoveAt(i);
+			}else if(!list[i].GetComponent<BoxCollider2D>().enabled){
+				list.RemoveAt(i);
 			}
 		}
 	}

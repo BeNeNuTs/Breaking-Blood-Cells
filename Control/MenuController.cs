@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class MenuController : MonoBehaviour{
+
+	public GameObject playMenu, controlMenu, receptionMenu;
+
 	public void quit(){
 		if (Application.isEditor)
 			Debug.Break ();
@@ -14,20 +17,20 @@ public class MenuController : MonoBehaviour{
 	}
 
 	public void toReception(){
-		GameObject.Find ("ReceptionMenu").SetActive (true);
-		GameObject.Find ("PlayMenu").SetActive (false);
-		GameObject.Find ("ControlMenu").SetActive (false);
+		receptionMenu.SetActive (true);
+		playMenu.SetActive (false);
+		controlMenu.SetActive (false);
 	}
 
 	public void toControls(){
-		GameObject.Find ("ReceptionMenu").SetActive (false);
-		GameObject.Find ("PlayMenu").SetActive (false);
-		GameObject.Find ("ControlMenu").SetActive (true);
+		receptionMenu.SetActive (false);
+		playMenu.SetActive (false);
+		controlMenu.SetActive (true);
 	}
 
 	public void toPlay(){
-		GameObject.Find ("ReceptionMenu").SetActive (false);
-		GameObject.Find ("PlayMenu").SetActive (true);
-		GameObject.Find ("ControlMenu").SetActive (false);
+		playMenu.SetActive (true);
+		receptionMenu.SetActive (false);
+		controlMenu.SetActive (false);
 	}
 }

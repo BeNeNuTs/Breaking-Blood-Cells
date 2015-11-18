@@ -21,13 +21,34 @@ public class LTAuxMovement : AgentMovement {
 
 		unitGenerator = GameObject.FindGameObjectWithTag("Base").GetComponent<UnitGenerator>();
 	}
+
+	protected override void OnTriggerEnter2D(Collider2D other){
+		if(other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)){
+			if(other.name.Contains("Macrophage") && MacrophageAttack.bringResidues){
+				if(other.GetComponent<Agent>().state == MacrophageAgent.BRING_RESIDUS){
+					Vector3 diff = other.transform.position - transform.position;
+					float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+					transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+					agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+				}
+			}
+		}
+	}
 	
 	protected override void Update () {
 		if(agent.state == LTAuxAgent.BACK_TO_BASE){
 			BackToBase();
 		}else if(agent.state == LTAuxAgent.ANALYZE){
 			Analize();
+		}else if(agent.state == Agent.WIGGLE){
+			Wiggle();
 		}
+	}
+
+	protected override void Wiggle(){
+		// Faire avancer l'agent
+		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
 	void BackToBase(){

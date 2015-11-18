@@ -28,7 +28,7 @@ public class MacrophageAttack : AgentAttack {
 		}
 
 		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone){
-			Debug.Log("RESIDUUUU");
+
 			residusGO = Instantiate(residusPrefab, transform.position, Quaternion.identity) as GameObject;
 			residusGO.transform.SetParent(transform);
 

@@ -41,7 +41,7 @@ public class ObjectifManager : MonoBehaviour {
 			if(currentObjective.isComplete()){
 				currentObjective.clear();
 				++idObjectif;
-				load (xmlPath, id:);
+				load (xmlPath, idObjectif);
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class ObjectifManager : MonoBehaviour {
 			if(currentObjective.isComplete()){
 				currentObjective.clear();
 				++idObjectif;
-				load (xmlPath, id:);
+				load (xmlPath, idObjectif);
 			}
 		}
 	}
@@ -73,7 +73,7 @@ public class ObjectifManager : MonoBehaviour {
 			if(currentObjective.isComplete()){
 				currentObjective.clear();
 				++idObjectif;
-				load (xmlPath, id:);
+				load (xmlPath, idObjectif);
 			}
 		}
 	}

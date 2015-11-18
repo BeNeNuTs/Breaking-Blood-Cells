@@ -17,5 +17,5 @@ public class Objectif : MonoBehaviour{
 	}
 
 	// Retourne vrai si l'objectif est rempli, faux sinon
-	Boolean isComplete(){ return (tableDesObjectifs.Count > 0) ? false : true; }
+	public Boolean isComplete(){ return (tableDesObjectifs.Count > 0) ? false : true; }
 }

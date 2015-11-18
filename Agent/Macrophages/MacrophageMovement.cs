@@ -20,6 +20,23 @@ public class MacrophageMovement : AgentMovement {
 		}
 	}
 
+	public void GoToAntibody(Vector3 antibody_position){
+		if(agent.state != Agent.WIGGLE){
+			return;
+		}
+
+		Vector3 diff = antibody_position - transform.position;
+		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+		
+		if(Vector3.Distance(antibody_position, transform.position) < stoppingDistance * 2){
+			agent.state = Agent.GOTOENEMY;
+			return;
+		}
+
+		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+	}
+
 	void BringResidus(){
 		if(LTAux == null){
 			agentAttack.RemoveResidus();

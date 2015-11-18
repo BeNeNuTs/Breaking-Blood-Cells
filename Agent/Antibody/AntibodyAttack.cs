@@ -20,6 +20,10 @@ public class AntibodyAttack : AgentAttack {
 	{
 		base.Update ();
 
+		if(agent.state == AntibodyAgent.CALL_MACROPHAGE){
+			CallMacrophages();
+		}
+
 		timeDestroy += Time.deltaTime;
 		if(!freezeEnemy && !antibodyMovement.hasTarget){
 			FadeSpriteRenderer();
@@ -69,5 +73,21 @@ public class AntibodyAttack : AgentAttack {
 
 	void FadeSpriteRenderer(){
 		sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1 - (timeDestroy / timeBeforeDestroy));
+	}
+
+	void CallMacrophages(){
+		antibodyMovement.UpdateList(antibodyMovement.targets);
+
+		if(timeDestroy > timeBeforeDestroy && antibodyMovement.targets.Count == 0){
+			Destroy(gameObject);
+		}
+
+		//CALL MACROPHAGES
+		GameObject[] cell = GameObject.FindGameObjectsWithTag("Cell");
+		foreach(GameObject macro in cell){
+			if(macro.name.Contains("Macrophage")){
+				macro.GetComponent<MacrophageMovement>().GoToAntibody(transform.position);
+			}
+		}
 	}
 }

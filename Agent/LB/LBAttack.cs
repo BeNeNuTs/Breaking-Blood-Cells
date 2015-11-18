@@ -36,7 +36,7 @@ public class LBAttack : AgentAttack {
 			Quaternion rot = Quaternion.Euler(new Vector3(0,0,angle));
 			
 			//Instanciate and initialize antibodies
-			GameObject instantiatedAntibodies = Instantiate(antibodiesPrefab, transform.position, rot) as GameObject;
+			Instantiate(antibodiesPrefab, transform.position, rot);
 		}
 	}
 }

@@ -85,7 +85,18 @@ public class InputManager : MonoBehaviour {
 		
 		//case (InputMode.Attacking)
 		}
+	}
+
+	public static void DeselectAll()
+	{
+		foreach(GameObject go in GameObject.FindGameObjectsWithTag("Selection"))
+		{
+			go.GetComponent<SpriteRenderer>().enabled = false;
 		}
+
+		GameManager.CellControlled.GetComponent<AgentMovement>().enabled = true; 
+		GameManager.CellControlled = null; 
+	}
 
 	
 

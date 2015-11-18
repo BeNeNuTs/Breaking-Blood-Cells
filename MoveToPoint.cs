@@ -24,13 +24,9 @@ public class MoveToPoint : MonoBehaviour {
 			else 
 			{
 				GetComponent<Rigidbody2D> ().velocity = Vector2.zero;
-				if(gameObject != GameManager.CellControlled)
-				{
-					GetComponent<AgentMovement>().enabled = true; 
-					enabled = false;
-				}
-				
-
+				//Si il est arrivé à destination et qu'il n'est plus sélectionné, on réactive son mouvement
+				GetComponent<AgentMovement>().enabled = true; 
+				enabled = false;
 				
 			}
 

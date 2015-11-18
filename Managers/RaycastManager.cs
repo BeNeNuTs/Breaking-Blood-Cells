@@ -23,9 +23,12 @@ public class RaycastManager : MonoBehaviour {
 	public static void RaycastControl()
 	{
 		RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 1000, LayerMask.GetMask("ClickLayer"));
-		if (hit) 
+		if (hit) {
+			hit.collider.gameObject.GetComponent<ClickToControl> ().ControlCell ();
+		} 
+		else 
 		{
-			hit.collider.gameObject.GetComponent<ClickToControl>().ControlCell();
+			InputManager.DeselectAll();
 		}
 	}
 

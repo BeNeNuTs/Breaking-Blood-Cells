@@ -113,9 +113,12 @@ public class AgentLife : MonoBehaviour {
 		float time = 1f;
 		float elapsedTime = 0f;
 		while (elapsedTime < time) {
-			c = Color.Lerp(newColor, Color.white, elapsedTime / time);
-			sprite.color = c;
-			elapsedTime += Time.deltaTime;
+			if(sprite != null)
+			{
+				c = Color.Lerp(newColor, Color.white, elapsedTime / time);
+				sprite.color = c;
+				elapsedTime += Time.deltaTime;
+			}
 			yield return null;
 		}
 	}

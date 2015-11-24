@@ -51,6 +51,7 @@ public class UnitManager : MonoBehaviour {
 			NB_LYMPHOCYTES_B--;
 		}else if(type.Contains("Bacteria")){
 			NB_BACTERIES--;
+			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(0);
 		}else if(type.Contains("Virus")){
 			NB_VIRUS--;
 		}

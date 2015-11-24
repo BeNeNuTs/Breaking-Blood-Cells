@@ -94,8 +94,10 @@ public class InputManager : MonoBehaviour {
 			go.GetComponent<SpriteRenderer>().enabled = false;
 		}
 
-		GameManager.CellControlled.GetComponent<AgentMovement>().enabled = true; 
-		GameManager.CellControlled = null; 
+		if (GameManager.CellControlled != null) {
+			GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = true; 
+			GameManager.CellControlled = null;
+		}
 	}
 
 	

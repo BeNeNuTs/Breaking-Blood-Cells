@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,36 +10,79 @@ using System.Text.RegularExpressions;
 public class ObjectifManager : MonoBehaviour {
 	
 	Objectif currentObjective = new Objectif();
+	Objectif initialObjective = new Objectif();
+
 	[HideInInspector]
 	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6};
-	
+
+	public GameObject ObjectifName;
+	public GameObject Progression;
+
 	public String xmlPath;
 
 	private static int idObjectif = 0;
+	
 
-/*	void Start(){
+
+	void Start(){
 		//Debug.Log (File.Exists(Application.dataPath+"\\Xml\\xmlTest.xml"));
+		xmlPath = Application.dataPath + "\\Xml\\xmlTest.xml";
 		load (Application.dataPath + "\\Xml\\xmlTest.xml", 0);
-		foreach(int i in objectifCourant.tableDesObjectifs.Keys){
+		/*foreach(int i in objectifCourant.tableDesObjectifs.Keys){
 			Debug.Log (i + " -> " + objectifCourant.tableDesObjectifs[i]);
-		}
-	}*/
+		}*/
+	}
 
 	void OnLevelWasLoaded(int level){
-		xmlPath = Application.dataPath+"\\Xml\\"+level+".xml";
+		xmlPath = Application.dataPath+"\\Xml\\xmlTest.xml";
+	}
+
+	void Update()
+	{
+
+		if (currentObjective.tableDesObjectifs.Count == 0) 
+		{
+			ObjectifName.GetComponent<Text> ().text = "MISSION COMPLETE !";
+			Progression.GetComponent<Text>().text = "";
+			return;
+		}
+
+		//Debug.Log (currentObjective.description);
+
+		ObjectifName.GetComponent<Text> ().text = currentObjective.description;
+		foreach(int i in currentObjective.tableDesObjectifs.Keys)
+		{
+
+			Debug.Log (i + " -> " + currentObjective.tableDesObjectifs[i]);
+
+			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6)
+				Progression.GetComponent<Text>().text = currentObjective.tableDesObjectifs[i].ToString()+ " / " + initialObjective.tableDesObjectifs[i].ToString();
+			else if(i == 5)
+			   Progression.GetComponent<Text>().text = RoundValue((float)currentObjective.tableDesObjectifs[i],1).ToString();
+
+
+			//Il est important de mettre cette instruction à la fin sinon on peut clear l'objectif et demander l'affichage ensuite
+			//Ce qui provoque une exception
+			if(i == 5)
+				updateGoal (5,Time.deltaTime);
+
+
+		}
+
+
+
 	}
 
 	// Met à jour un objectif en fonction du second paramètre
-	void updateGoal(int label, int type = 0){
+	public void updateGoal(int label){
 		if (currentObjective.tableDesObjectifs.ContainsKey (label)) {
 			int tmp = (int) currentObjective.tableDesObjectifs[label];
-			--tmp;
-			if(tmp != 0)
+			++tmp;
+			if(tmp >= 0)
 				currentObjective.tableDesObjectifs[label] = tmp;
-			else
-				currentObjective.tableDesObjectifs.Remove(label);
 			
-			if(currentObjective.isComplete()){
+			if(isCurrentObjectiveComplete()){
+				initialObjective.clear();
 				currentObjective.clear();
 				++idObjectif;
 				load (xmlPath, idObjectif);
@@ -46,16 +90,14 @@ public class ObjectifManager : MonoBehaviour {
 		}
 	}
 
-	void updateGoal(int label, float type = 0){
+	void updateGoal(int label, float time){
 		if (currentObjective.tableDesObjectifs.ContainsKey (label)) {
 			float tmp = (float) currentObjective.tableDesObjectifs[label];
-			tmp -= 1; // VALEUR A DEFINIR PLUS EN DETAIL
-			if(tmp != 0.0f)
-				currentObjective.tableDesObjectifs[label] = tmp;
-			else
-				currentObjective.tableDesObjectifs.Remove(label);
+			tmp -= time; // VALEUR A DEFINIR PLUS EN DETAIL
+			currentObjective.tableDesObjectifs[label] = tmp;
+
 			
-			if(currentObjective.isComplete()){
+			if(isCurrentObjectiveComplete()){
 				currentObjective.clear();
 				++idObjectif;
 				load (xmlPath, idObjectif);
@@ -70,12 +112,27 @@ public class ObjectifManager : MonoBehaviour {
 				currentObjective.tableDesObjectifs.Remove(label);
 			}
 
-			if(currentObjective.isComplete()){
+			if(isCurrentObjectiveComplete()){
 				currentObjective.clear();
 				++idObjectif;
 				load (xmlPath, idObjectif);
 			}
 		}
+	}
+
+	bool isCurrentObjectiveComplete()
+	{
+		foreach (int i in currentObjective.tableDesObjectifs.Keys) 
+		{
+			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
+				return false;
+			else if(i == 5 && (float)currentObjective.tableDesObjectifs[i] > 0.0f)
+				return false;
+			else if(i == 2)
+				return false;
+
+		}
+		return true;
 	}
 
 	// Charge l'objectif id du fichier XML au chemin path dans l'objectif courant
@@ -95,26 +152,65 @@ public class ObjectifManager : MonoBehaviour {
 		while(myXmlTextReader.Read()){
 			if(myXmlTextReader.IsStartElement() && myXmlTextReader.Name == "objectif"){
 				if (int.Parse(myXmlTextReader.GetAttribute("id")) == id){
+
 					aTrouve = true;
+					initialObjective.description = myXmlTextReader.GetAttribute("description");
 					currentObjective.description = myXmlTextReader.GetAttribute("description");
+
+					initialObjective.learning = myXmlTextReader.GetAttribute("learning");
+					currentObjective.learning = myXmlTextReader.GetAttribute("learning");
+
+
 					tag = int.Parse(myXmlTextReader.GetAttribute("tag"));
-					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6){ // Si on a ces tags, on a forcément un int dans value
-						currentObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
+					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6)
+					{ // Si on a ces tags, on a forcément un int dans value
+						initialObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
+						currentObjective.tableDesObjectifs.Add(tag, 0);
 						break;
-					} else if(tag == 2){ // Pour le tag 2, on récupère un vector2 dans value sous forme "float;float"
+					} 
+					else if(tag == 2)
+					{ // Pour le tag 2, on récupère un vector2 dans value sous forme "float;float"
 						coordMatchX = coordRegexX.Match(myXmlTextReader.GetAttribute("value"));
 						coordMatchY = coordRegexY.Match(myXmlTextReader.GetAttribute("value"));
 						coords.Set(float.Parse(coordMatchX.Value), float.Parse(coordMatchY.Value));
+						initialObjective.tableDesObjectifs.Add(tag, (Vector2)coords);
 						currentObjective.tableDesObjectifs.Add(tag, (Vector2)coords);
 						break;
-					} else if(tag == 5){ // Pour le tag 5 on a un float dans value
+					} 
+					else if(tag == 5)
+					{ // Pour le tag 5 on a un float dans value
+						initialObjective.tableDesObjectifs.Add(tag, (float)float.Parse(myXmlTextReader.GetAttribute("value")));
 						currentObjective.tableDesObjectifs.Add(tag, (float)float.Parse(myXmlTextReader.GetAttribute("value")));
 						break;
 					}
+
+
 				}
 			}
 		}
+
+		if (aTrouve) 
+		{
+			//Activer le panneau
+			GameObject panel = GameObject.Find(initialObjective.learning);
+			if(panel != null)
+			{
+				panel.GetComponent<PanelController>().isPanelActive = true;
+			}
+			else
+			{
+				Debug.Log("Panneau inexistant : " + initialObjective.learning);
+			}
+		}
+
 		if (!aTrouve)
 			Debug.Log ("N'a pas trouvé.\n");
 	}
+
+	/** Arrondi un float avec <precision> chiffre après la virgule */
+	public static float RoundValue(float num, float precision)
+	{
+		return Mathf.Floor(num * precision + 0.5f) / precision;
+	}
+
 }

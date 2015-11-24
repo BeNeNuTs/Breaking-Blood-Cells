@@ -8,7 +8,8 @@ public class LTAuxMovement : AgentMovement {
 	
 	public float timeToAnalize = 3f;
 	
-	GameObject residusGO;
+	public GameObject residuBacteriaSprite;
+	public GameObject residuVirusSprite;
 	float time;
 
 	UnitGenerator unitGenerator;
@@ -26,6 +27,7 @@ public class LTAuxMovement : AgentMovement {
 		if(other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)){
 			if(other.name.Contains("Macrophage") && MacrophageAttack.bringResidues){
 				if(other.GetComponent<Agent>().state == MacrophageAgent.BRING_RESIDUS){
+
 					Vector3 diff = other.transform.position - transform.position;
 					float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 					transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
@@ -72,8 +74,10 @@ public class LTAuxMovement : AgentMovement {
 		time += Time.deltaTime;
 		
 		if(time > timeToAnalize){
+			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(3);
 			if(typeResidus == Type.TypeResidus.BACTERIA){
 				Debug.Log("GENERER CYTOTOXIQUE");
+				residuBacteriaSprite.SetActive(false);
 				unitGenerator.Generate(Type.TypeUnit.LT_CYTOTOXIQUE);
 			}else if(typeResidus == Type.TypeResidus.VIRUS){
 				Debug.Log("GENERER LB");
@@ -93,7 +97,7 @@ public class LTAuxMovement : AgentMovement {
 		
 		residus = true;
 		typeResidus = _typeResidus;
-		
+		residuBacteriaSprite.SetActive(true);
 		agent.state = LTAuxAgent.BACK_TO_BASE;
 		return true;
 	}

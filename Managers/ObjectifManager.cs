@@ -21,7 +21,8 @@ public class ObjectifManager : MonoBehaviour {
 	public String xmlPath;
 
 	private static int idObjectif = 0;
-	
+
+	private const float ECART_POSITION = 5.0f;
 
 
 	void Start(){
@@ -73,7 +74,7 @@ public class ObjectifManager : MonoBehaviour {
 
 	}
 
-	// Met à jour un objectif en fonction du second paramètre
+	// Objectifs qui se décrémentent par entier (tuer bactérie, etc...)
 	public void updateGoal(int label){
 		if (currentObjective.tableDesObjectifs.ContainsKey (label)) {
 			int tmp = (int) currentObjective.tableDesObjectifs[label];
@@ -90,6 +91,8 @@ public class ObjectifManager : MonoBehaviour {
 		}
 	}
 
+
+	// Objectifs qui se décrémentent par float (time, etc...)
 	void updateGoal(int label, float time){
 		if (currentObjective.tableDesObjectifs.ContainsKey (label)) {
 			float tmp = (float) currentObjective.tableDesObjectifs[label];
@@ -105,10 +108,11 @@ public class ObjectifManager : MonoBehaviour {
 		}
 	}
 
+	// Objectifs qui se décrémentent par position (vecteurs etc...)
 	void updateGoal(int label, Vector2 pos){
 		if (currentObjective.tableDesObjectifs.ContainsKey (label)) {
 			Vector2 obj = (Vector2)(currentObjective.tableDesObjectifs[label]);
-			if((pos.x > obj.x-5.0f || pos.x < obj.x+5.0f) && (pos.y > obj.y-5.0f || pos.y < obj.y+5.0f)){ // VARIABLE D'ECART A DEFINIR
+			if((pos.x > obj.x-ECART_POSITION || pos.x < obj.x+ECART_POSITION) && (pos.y > obj.y-ECART_POSITION || pos.y < obj.y+ECART_POSITION)){ // VARIABLE D'ECART A DEFINIR
 				currentObjective.tableDesObjectifs.Remove(label);
 			}
 

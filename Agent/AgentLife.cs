@@ -12,8 +12,11 @@ public class AgentLife : MonoBehaviour {
 
 	protected Agent agent;
 
-	GameObject canvas;
-	Image cellLife;
+	[HideInInspector]
+	public GameObject canvas;
+	[HideInInspector]
+	public Image cellLife;
+
 	bool isDead;
 
 	// Use this for initialization
@@ -55,7 +58,7 @@ public class AgentLife : MonoBehaviour {
 	}
 
 	/** Inflige des dégats à l'agent */
-	public void TakeDamage (int amount)
+	public void TakeDamage (int amount, bool virus = false)
 	{
 		if(isDead)
 			return;
@@ -64,7 +67,9 @@ public class AgentLife : MonoBehaviour {
 		
 		if(currentLife <= 0)
 		{
-			Death ();
+			if(!virus){
+				Death ();
+			}
 			return;
 		}
 		
@@ -94,7 +99,11 @@ public class AgentLife : MonoBehaviour {
 
 		Destroy(canvas);
 		Destroy(this.gameObject);
+	}
 
+	public void DeathByVirus ()
+	{
+		Death();
 	}
 
 	Vector3 posCanvas { 

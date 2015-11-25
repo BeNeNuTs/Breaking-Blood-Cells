@@ -48,6 +48,7 @@ public class InputManager : MonoBehaviour {
 			playerTarget = RaycastManager.RaycastAttackEnemy ();
 			GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = false;
 			GameManager.CellControlled.GetComponent<MoveToPoint> ().DefineNewDestination (Camera.main.ScreenToWorldPoint (Input.mousePosition));
+
 			if (playerTarget != null) {
 				mode = InputMode.Attacking;
 			}
@@ -66,7 +67,7 @@ public class InputManager : MonoBehaviour {
 
 			if(playerTarget == null)
 			{
-				GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = false;
+				//GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = true;
 				mode = InputMode.Controlling;
 				break;
 			}

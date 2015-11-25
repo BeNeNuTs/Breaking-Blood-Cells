@@ -24,43 +24,43 @@ public class VirusAttack : AgentAttack {
 		timer = 0f;
 		
 		AgentLife enemyLife = closest.GetComponent<AgentLife>();
-		
-		if(enemyLife.currentLife > 0)
-		{
-			enemyLife.TakeDamage (attackDamage, true);
-			if(enemyLife.currentLife <= 0){
-				GetComponent<VirusMovement>().target = enemyLife.gameObject;
+		if(enemyLife != null)
+			if(enemyLife.currentLife > 0)
+			{
+				enemyLife.TakeDamage (attackDamage, true);
+				if(enemyLife.currentLife <= 0){
+					GetComponent<VirusMovement>().target = enemyLife.gameObject;
 
-				AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
-				if(enemyMovement != null){
-					enemyMovement.agentRigidbody.velocity = Vector2.zero;
-					enemyMovement.enabled = false;
+					AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
+					if(enemyMovement != null){
+						enemyMovement.agentRigidbody.velocity = Vector2.zero;
+						enemyMovement.enabled = false;
+					}
+					AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
+					if(enemyAttack != null){
+						enemyAttack.enabled = false;
+					}
+
+					BoxCollider2D boxCollider = enemyLife.gameObject.GetComponent<BoxCollider2D>();
+					if(boxCollider != null){
+						boxCollider.enabled = false;
+					}
+
+					CircleCollider2D circleCollider = enemyLife.gameObject.GetComponent<CircleCollider2D>();
+					if(circleCollider != null){
+						circleCollider.enabled = false;
+					}
+
+					GetComponent<CircleCollider2D>().enabled = false;
+					GetComponent<BoxCollider2D>().enabled = false;
+					myLife.canvas.GetComponent<Canvas>().enabled = false;
+
+					StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));
+
+					agent.state = VirusAgent.CONTROL;
 				}
-				AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
-				if(enemyAttack != null){
-					enemyAttack.enabled = false;
-				}
-
-				BoxCollider2D boxCollider = enemyLife.gameObject.GetComponent<BoxCollider2D>();
-				if(boxCollider != null){
-					boxCollider.enabled = false;
-				}
-
-				CircleCollider2D circleCollider = enemyLife.gameObject.GetComponent<CircleCollider2D>();
-				if(circleCollider != null){
-					circleCollider.enabled = false;
-				}
-
-				GetComponent<CircleCollider2D>().enabled = false;
-				GetComponent<BoxCollider2D>().enabled = false;
-				myLife.canvas.GetComponent<Canvas>().enabled = false;
-
-				StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));
-
-				agent.state = VirusAgent.CONTROL;
 			}
-		}
-		
+			
 		return enemyLife;
 	}
 

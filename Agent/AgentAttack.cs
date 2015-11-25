@@ -55,11 +55,11 @@ public class AgentAttack : MonoBehaviour {
 		timer = 0f;
 
 		AgentLife enemyLife = closest.GetComponent<AgentLife>();
-
-		if(enemyLife.currentLife > 0)
-		{
-			enemyLife.TakeDamage (attackDamage);
-		}
+		if(enemyLife != null)
+			if(enemyLife.currentLife > 0)
+			{
+				enemyLife.TakeDamage (attackDamage);
+			}
 
 		return enemyLife;
 	}

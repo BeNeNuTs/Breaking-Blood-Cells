@@ -122,7 +122,7 @@ public class AgentMovement : MonoBehaviour {
 		closest = list[0];
 		
 		for(int i = 1 ; i < list.Count ; i++){
-			if(closest == null)
+			if(closest == null || list[i] == null)
 				continue;
 
 			if(Vector3.Distance(transform.position, list[i].transform.position) < Vector3.Distance(transform.position, closest.transform.position)){

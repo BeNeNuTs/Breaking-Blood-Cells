@@ -36,6 +36,7 @@ public class VirusAttack : AgentAttack {
 					enemyMovement.agentRigidbody.velocity = Vector2.zero;
 					enemyMovement.enabled = false;
 				}
+
 				AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
 				if(enemyAttack != null){
 					enemyAttack.enabled = false;
@@ -52,7 +53,6 @@ public class VirusAttack : AgentAttack {
 				}
 
 				GetComponent<CircleCollider2D>().enabled = false;
-				GetComponent<BoxCollider2D>().enabled = false;
 				myLife.canvas.GetComponent<Canvas>().enabled = false;
 
 				StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));

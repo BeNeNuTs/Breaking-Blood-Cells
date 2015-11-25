@@ -4,12 +4,17 @@ using System.Collections;
 public class AntibodyAttack : AgentAttack {
 
 	public float timeBeforeDestroy = 5f;
-
 	float timeDestroy = 0f;
+
+	public float timeAfterFreeze = 10f;
+	float timeDestroyFreeze = 0f;
+
 	bool freezeEnemy = false;
 
 	AntibodyMovement antibodyMovement;
 	SpriteRenderer sprite;
+
+	AgentLife enemyLife;
 
 	void Start(){
 		antibodyMovement = GetComponent<AntibodyMovement>();
@@ -34,6 +39,13 @@ public class AntibodyAttack : AgentAttack {
 		if(timeDestroy > timeBeforeDestroy && !freezeEnemy && !antibodyMovement.hasTarget){
 			Destroy(gameObject);
 		}
+
+		if(freezeEnemy && antibodyMovement.hasTarget){
+			timeDestroyFreeze += Time.deltaTime;
+			if(timeDestroyFreeze > timeAfterFreeze){
+				UnfreezeEnemy();
+			}
+		}
 	}
 
 	protected override AgentLife Attack ()
@@ -51,24 +63,43 @@ public class AntibodyAttack : AgentAttack {
 			agent.state = Agent.WIGGLE;
 			return null;
 		}
+
+		AgentLife agentLife = closest.GetComponent<AgentLife>();
 		
-		myMovement.agentRigidbody.velocity = Vector2.zero;
-		timer = 0f;
-		
-		AgentLife enemyLife = closest.GetComponent<AgentLife>();
-		
-		if(enemyLife.currentLife > 0)
+		if(agentLife.currentLife > 0 && agentLife.GetComponent<AgentAttack>().enabled && agentLife.GetComponent<AgentMovement>().enabled)
 		{
+			myMovement.agentRigidbody.velocity = Vector2.zero;
+			timer = 0f;
+
 			freezeEnemy = true;
-			AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
-			enemyMovement.agentRigidbody.velocity = Vector2.zero;
-			enemyMovement.enabled = false;
-			enemyLife.GetComponent<AgentAttack>().enabled = false;
+			enemyLife = agentLife;
+
+			FreezeEnemy();
 
 			agent.state = AntibodyAgent.CALL_MACROPHAGE;
 		}
 		
 		return enemyLife;
+	}
+
+	void FreezeEnemy(){
+		AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
+		enemyMovement.agentRigidbody.velocity = Vector2.zero;
+		enemyMovement.enabled = false;
+		enemyLife.GetComponent<AgentAttack>().enabled = false;
+	}
+
+	void UnfreezeEnemy(){
+		AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
+		enemyMovement.enabled = true;
+		enemyLife.GetComponent<AgentAttack>().enabled = true;
+
+		enemyLife = null;
+
+		freezeEnemy = false;
+		antibodyMovement.hasTarget = false;
+
+		Destroy(gameObject);
 	}
 
 	void FadeSpriteRenderer(){

@@ -7,7 +7,10 @@ public class UnitManager : MonoBehaviour {
 
 	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50;
 
+	static ObjectifManager objManager;
+
 	void Awake(){
+
 		NB_MACROPHAGES = NB_CELLS = NB_LYMPHOCYTES_T = NB_LYMPHOCYTES_B = NB_BACTERIES = NB_VIRUS = 0;
 
 		GameObject[] cells = GameObject.FindGameObjectsWithTag("Cell");
@@ -36,6 +39,10 @@ public class UnitManager : MonoBehaviour {
 		ShowStats();
 	}
 
+	void Start(){
+		objManager = GameManager.gameManager.GetComponent<ObjectifManager>();
+	}
+
 	public static void ShowStats(){
 		Debug.LogWarning("NB_MACRO : " + NB_MACROPHAGES + " - NB_CELL : " + NB_CELLS + " - NB_LT : " + NB_LYMPHOCYTES_T + " - NB_LB : " + NB_LYMPHOCYTES_B + " - NB_BACT : " + NB_BACTERIES + " - NB_VIRUS : " + NB_VIRUS);
 	}
@@ -51,7 +58,9 @@ public class UnitManager : MonoBehaviour {
 			NB_LYMPHOCYTES_B--;
 		}else if(type.Contains("Bacteria")){
 			NB_BACTERIES--;
-			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(0);
+			if(objManager != null){
+				objManager.updateGoal(0);
+			}
 		}else if(type.Contains("Virus")){
 			NB_VIRUS--;
 		}

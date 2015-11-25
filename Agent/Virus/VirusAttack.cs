@@ -29,6 +29,9 @@ public class VirusAttack : AgentAttack {
 		{
 			enemyLife.TakeDamage (attackDamage, true);
 			if(enemyLife.currentLife <= 0){
+				enemyLife.startingLife = myLife.startingLife;
+				enemyLife.currentLife = myLife.startingLife;
+
 				GetComponent<VirusMovement>().target = enemyLife.gameObject;
 
 				AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();

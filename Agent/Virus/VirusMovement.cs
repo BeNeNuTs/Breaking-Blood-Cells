@@ -86,6 +86,11 @@ public class VirusMovement : AgentMovement {
 	}
 
 	public void TakeDamageToCellControled(float amount){
+		if(cellLife == null){
+			Destroy (gameObject);
+			return;
+		}
+
 		cellLife.currentLife -= amount;
 		if(cellLife.currentLife <= 0){
 			cellLife.DeathByVirus();

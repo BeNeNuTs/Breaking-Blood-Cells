@@ -90,6 +90,11 @@ public class AntibodyAttack : AgentAttack {
 	}
 
 	void UnfreezeEnemy(){
+		if(enemyLife == null){
+			Destroy(gameObject);
+			return;
+		}
+
 		AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
 		enemyMovement.enabled = true;
 		enemyLife.GetComponent<AgentAttack>().enabled = true;

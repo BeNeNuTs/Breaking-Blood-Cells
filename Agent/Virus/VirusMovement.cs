@@ -11,6 +11,15 @@ public class VirusMovement : AgentMovement {
 
 	AgentLife cellLife;
 
+	void OnEnable(){
+		UpdateList(targets);
+		for(int i = 0 ; i < targets.Count ; i++){
+			if(Vector3.Distance(targets[i].transform.position, transform.position) > stoppingDistance){
+				targets.RemoveAt(i);
+			}
+		}
+	}
+
 	protected override void Update ()
 	{
 		base.Update ();

@@ -64,6 +64,11 @@ public class AntibodyAttack : AgentAttack {
 			return null;
 		}
 
+		if(Vector3.Distance(closest.transform.position, transform.position) > myMovement.stoppingDistance){
+			agent.state = Agent.WIGGLE;
+			return null;
+		}
+
 		AgentLife agentLife = closest.GetComponent<AgentLife>();
 		
 		if(agentLife.currentLife > 0 && agentLife.GetComponent<AgentAttack>().enabled && agentLife.GetComponent<AgentMovement>().enabled)

@@ -23,7 +23,9 @@ public class BacteriaMovement : AgentMovement {
 		base.OnTriggerExit2D(other);
 
 		if(other.CompareTag(gameObject.tag) && other.GetType() == typeof(BoxCollider2D)){
-			bacterias.Remove(other.gameObject);
+			if(Vector3.Distance(transform.position, other.transform.position) > GetComponent<CircleCollider2D>().radius){
+				bacterias.Remove(other.gameObject);
+			}
 		}
 	}
 

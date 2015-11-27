@@ -11,6 +11,8 @@ public class AgentAttack : MonoBehaviour {
 
 	protected AgentLife myLife;
 	protected float timer;
+
+	public GameObject impactAttack; 
 	
 	void Awake ()
 	{
@@ -59,6 +61,9 @@ public class AgentAttack : MonoBehaviour {
 			if(enemyLife.currentLife > 0)
 			{
 				enemyLife.TakeDamage (attackDamage);
+				if(impactAttack != null)
+					Instantiate(impactAttack,closest.transform.position,Quaternion.identity);
+				
 			}
 
 		return enemyLife;

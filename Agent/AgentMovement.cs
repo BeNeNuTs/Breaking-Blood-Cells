@@ -35,7 +35,9 @@ public class AgentMovement : MonoBehaviour {
 
 	protected virtual void OnTriggerExit2D(Collider2D other){
 		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
-			targets.Remove(other.gameObject);
+			if(Vector3.Distance(transform.position, other.transform.position) > GetComponent<CircleCollider2D>().radius){
+				targets.Remove(other.gameObject);
+			}
 		}
 	}
 

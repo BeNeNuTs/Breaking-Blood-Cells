@@ -5,11 +5,15 @@ using System.Collections.Generic;
 public class MacrophageMovement : AgentMovement {
 
 	MacrophageAttack agentAttack;
-	GameObject LTAux;
+	List<GameObject> LTAux;
 
 	void Start(){
 		agentAttack = GetComponent<MacrophageAttack>();
-		LTAux = GameObject.FindGameObjectWithTag("LTAux");
+		GameObject[] LT = GameObject.FindGameObjectsWithTag("LTAux");
+		LTAux = new List<GameObject>();
+		foreach(GameObject GO in LT){
+			LTAux.Add(GO);
+		}
 	}
 
 	protected override void Update () {
@@ -26,15 +30,18 @@ public class MacrophageMovement : AgentMovement {
 		}
 
 		Vector3 diff = antibody_position - transform.position;
-		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 		
 		if(Vector3.Distance(antibody_position, transform.position) < stoppingDistance * 2){
+
+			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+			transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
+			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+
 			agent.state = Agent.GOTOENEMY;
 			return;
 		}
 
-		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
-		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+
 	}
 
 	void BringResidus(){
@@ -44,12 +51,18 @@ public class MacrophageMovement : AgentMovement {
 			return;
 		}
 
-		Vector3 diff = LTAux.transform.position - transform.position;
+		GameObject closest = GetClosestTarget(LTAux);
+
+		if(closest == null){
+			return;
+		}
+
+		Vector3 diff = closest.transform.position - transform.position;
 		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 
-		if(Vector3.Distance(LTAux.transform.position, transform.position) < stoppingDistance){
+		if(Vector3.Distance(closest.transform.position, transform.position) < stoppingDistance){
 			//DONNER RESIDUS
-			GiveResidus();
+			GiveResidus(closest);
 
 			transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 180f);
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
@@ -61,8 +74,8 @@ public class MacrophageMovement : AgentMovement {
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
-	void GiveResidus(){
-		if(LTAux.GetComponent<LTAuxMovement>().TakeResidus(agentAttack.typeResidus)){
+	void GiveResidus(GameObject LT){
+		if(LT.GetComponent<LTAuxMovement>().TakeResidus(agentAttack.typeResidus)){
 			MacrophageAttack.residuesDone = true;
 			agentAttack.RemoveResidus();
 		}

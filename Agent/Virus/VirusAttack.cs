@@ -30,12 +30,14 @@ public class VirusAttack : AgentAttack {
 				enemyLife.TakeDamage (attackDamage, true);
 				if(enemyLife.currentLife <= 0){
 					GetComponent<VirusMovement>().target = enemyLife.gameObject;
+					enemyLife.isInfected = true;
 
 					AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
 					if(enemyMovement != null){
 						enemyMovement.agentRigidbody.velocity = Vector2.zero;
 						enemyMovement.enabled = false;
 					}
+
 					AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
 					if(enemyAttack != null){
 						enemyAttack.enabled = false;
@@ -51,9 +53,10 @@ public class VirusAttack : AgentAttack {
 						circleCollider.enabled = false;
 					}
 
+
 					GetComponent<CircleCollider2D>().enabled = false;
-					GetComponent<BoxCollider2D>().enabled = false;
 					myLife.canvas.GetComponent<Canvas>().enabled = false;
+
 
 					StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));
 

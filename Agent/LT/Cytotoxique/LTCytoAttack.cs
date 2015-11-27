@@ -38,7 +38,7 @@ public class LTCytoAttack : AgentAttack {
 
 		trail.enabled = true;
 		myMovement.agentRigidbody.AddForce(dir * dashForce);
-		myMovement.agentRigidbody.rotation += 180f;
+		//myMovement.agentRigidbody.rotation += 180f;
 	
 		StartCoroutine(HideTrail());
 

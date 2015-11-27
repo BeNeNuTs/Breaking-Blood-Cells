@@ -11,13 +11,12 @@ public class AgentLife : MonoBehaviour {
 	public float offsetY;
 
 	protected Agent agent;
+	protected bool isDead;
 
 	[HideInInspector]
 	public GameObject canvas;
 	[HideInInspector]
 	public Image cellLife;
-
-	bool isDead;
 
 	// Use this for initialization
 	void Awake () {
@@ -58,13 +57,13 @@ public class AgentLife : MonoBehaviour {
 	}
 
 	/** Inflige des dégats à l'agent */
-	public void TakeDamage (int amount, bool virus = false)
+	public virtual void TakeDamage (int amount, bool virus = false)
 	{
 		if(isDead)
 			return;
 		
 		currentLife -= amount;
-		
+
 		if(currentLife <= 0)
 		{
 			if(!virus){

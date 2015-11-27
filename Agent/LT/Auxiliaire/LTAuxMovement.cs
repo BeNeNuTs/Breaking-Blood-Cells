@@ -81,6 +81,7 @@ public class LTAuxMovement : AgentMovement {
 				unitGenerator.Generate(Type.TypeUnit.LT_CYTOTOXIQUE);
 			}else if(typeResidus == Type.TypeResidus.VIRUS){
 				Debug.Log("GENERER LB");
+				residuVirusSprite.SetActive(false);
 				unitGenerator.Generate(Type.TypeUnit.LB);
 			}
 			
@@ -97,8 +98,14 @@ public class LTAuxMovement : AgentMovement {
 		
 		residus = true;
 		typeResidus = _typeResidus;
-		residuBacteriaSprite.SetActive(true);
+		if(typeResidus == Type.TypeResidus.BACTERIA){
+			residuBacteriaSprite.SetActive(true);
+		}else if(typeResidus == Type.TypeResidus.VIRUS){
+			residuVirusSprite.SetActive(true);
+		}
+
 		agent.state = LTAuxAgent.BACK_TO_BASE;
 		return true;
 	}
+
 }

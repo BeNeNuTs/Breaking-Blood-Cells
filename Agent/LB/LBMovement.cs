@@ -9,6 +9,12 @@ public class LBMovement : AgentMovement {
 		agentAttack = GetComponent<LBAttack>();
 	}
 
+	protected override void OnTriggerEnter2D(Collider2D other){
+		if(other.name.Contains("Virus")){
+			base.OnTriggerEnter2D(other);
+		}
+	}
+
 	protected override void Wiggle(){
 		if(targets.Count > 0 && agentAttack.CheckTimer()){
 			agent.state = Agent.ATTACK;

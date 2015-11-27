@@ -64,6 +64,11 @@ public class AntibodyAttack : AgentAttack {
 			return null;
 		}
 
+		if(Vector3.Distance(closest.transform.position, transform.position) > myMovement.stoppingDistance){
+			agent.state = Agent.WIGGLE;
+			return null;
+		}
+
 		AgentLife agentLife = closest.GetComponent<AgentLife>();
 		
 		if(agentLife.currentLife > 0 && agentLife.GetComponent<AgentAttack>().enabled && agentLife.GetComponent<AgentMovement>().enabled)
@@ -90,6 +95,11 @@ public class AntibodyAttack : AgentAttack {
 	}
 
 	void UnfreezeEnemy(){
+		if(enemyLife == null){
+			Destroy(gameObject);
+			return;
+		}
+
 		AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
 		enemyMovement.enabled = true;
 		enemyLife.GetComponent<AgentAttack>().enabled = true;

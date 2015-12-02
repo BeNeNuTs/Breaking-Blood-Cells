@@ -13,7 +13,7 @@ public class ObjectifManager : MonoBehaviour {
 	Objectif initialObjective = new Objectif();
 
 	[HideInInspector]
-	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6};
+	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6, LOSEMACROPHAGES = 7};
 
 	public GameObject ObjectifName;
 	public GameObject Progression;
@@ -25,6 +25,10 @@ public class ObjectifManager : MonoBehaviour {
 	private const float ECART_POSITION = 5.0f;
 
 	public static int ObjectifId;
+	public static bool blend;
+
+	public static string learning;
+
 
 
 	void Start(){
@@ -43,12 +47,6 @@ public class ObjectifManager : MonoBehaviour {
 	void Update()
 	{
 
-		if (currentObjective.tableDesObjectifs.Count == 0) 
-		{
-			ObjectifName.GetComponent<Text> ().text = "MISSION COMPLETE !";
-			Progression.GetComponent<Text>().text = "";
-			return;
-		}
 
 		//Debug.Log (currentObjective.description);
 
@@ -56,12 +54,15 @@ public class ObjectifManager : MonoBehaviour {
 		foreach(int i in currentObjective.tableDesObjectifs.Keys)
 		{
 
-			Debug.Log (i + " -> " + currentObjective.tableDesObjectifs[i]);
+			//Debug.Log (i + " -> " + currentObjective.tableDesObjectifs[i]);
 
-			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6)
+			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i ==7)
 				Progression.GetComponent<Text>().text = currentObjective.tableDesObjectifs[i].ToString()+ " / " + initialObjective.tableDesObjectifs[i].ToString();
 			else if(i == 5)
 			   Progression.GetComponent<Text>().text = RoundValue((float)currentObjective.tableDesObjectifs[i],1).ToString();
+			/*else if(i == 7)
+				Progression.GetComponent<Text>().text = "";*/
+
 
 
 			//Il est important de mettre cette instruction à la fin sinon on peut clear l'objectif et demander l'affichage ensuite
@@ -69,7 +70,14 @@ public class ObjectifManager : MonoBehaviour {
 			if(i == 5)
 				updateGoal (5,Time.deltaTime);
 
+		}
 
+		
+		if (currentObjective.tableDesObjectifs.Count == 0) 
+		{
+			ObjectifName.GetComponent<Text> ().text = "MISSION COMPLETE !";
+			Progression.GetComponent<Text>().text = "";
+			return;
 		}
 
 
@@ -130,7 +138,7 @@ public class ObjectifManager : MonoBehaviour {
 	{
 		foreach (int i in currentObjective.tableDesObjectifs.Keys) 
 		{
-			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
+			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 7) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
 				return false;
 			else if(i == 5 && (float)currentObjective.tableDesObjectifs[i] > 0.0f)
 				return false;
@@ -164,12 +172,13 @@ public class ObjectifManager : MonoBehaviour {
 					initialObjective.description = myXmlTextReader.GetAttribute("description");
 					currentObjective.description = myXmlTextReader.GetAttribute("description");
 
-					initialObjective.learning = myXmlTextReader.GetAttribute("learning");
-					currentObjective.learning = myXmlTextReader.GetAttribute("learning");
+					learning = myXmlTextReader.GetAttribute("learning");
+
+					blend = bool.Parse(myXmlTextReader.GetAttribute("blend"));
 
 
 					tag = int.Parse(myXmlTextReader.GetAttribute("tag"));
-					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6)
+					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6 || tag == 7)
 					{ // Si on a ces tags, on a forcément un int dans value
 						initialObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
 						currentObjective.tableDesObjectifs.Add(tag, 0);
@@ -196,22 +205,11 @@ public class ObjectifManager : MonoBehaviour {
 			}
 		}
 
-		if (aTrouve) 
-		{
-			//Activer le panneau
-			GameObject panel = GameObject.Find(initialObjective.learning);
-			if(panel != null)
-			{
-				panel.GetComponent<PanelController>().isPanelActive = true;
-			}
-			else
-			{
-				Debug.Log("Panneau inexistant : " + initialObjective.learning);
-			}
-		}
-
-		if (!aTrouve)
+		if (aTrouve) {
+			StartCoroutine(GameManager.gameManager.GetComponent<GameManager>().makeTransition (1, 1));
+		} else {
 			Debug.Log ("N'a pas trouvé.\n");
+		}
 	}
 
 	/** Arrondi un float avec <precision> chiffre après la virgule */

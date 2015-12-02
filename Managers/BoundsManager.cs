@@ -25,6 +25,7 @@ public class BoundsManager : MonoBehaviour {
 
 			AgentMovement agentMovement = other.gameObject.GetComponent<AgentMovement>();
 			agentMovement.agentRigidbody.rotation = rot_z;
+			other.gameObject.GetComponent<Rigidbody2D>().AddForce(normal * 1200);
 
 			/*AgentMovement agentMovement = other.gameObject.GetComponent<AgentMovement>();
 			if(normal.x == 0f){

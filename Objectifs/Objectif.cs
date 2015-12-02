@@ -19,7 +19,7 @@ public class Objectif : MonoBehaviour{
 	}
 
 	// Retourne vrai si l'objectif est rempli, faux sinon
-	public Boolean isComplete()
+	/*public Boolean isComplete()
 	{ 
 		return (tableDesObjectifs.Count > 0) ? false : true;
 		/*for (int cptObjectif = 0; cptObjectif < tableDesObjectifs.Count; ++cptObjectif) 
@@ -28,6 +28,5 @@ public class Objectif : MonoBehaviour{
 				return false;
 		}
 
-		return true;*/
-	}
+		return true;}*/
 }

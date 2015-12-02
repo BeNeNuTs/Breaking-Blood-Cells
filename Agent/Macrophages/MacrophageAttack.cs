@@ -26,7 +26,7 @@ public class MacrophageAttack : AgentAttack {
 			return enemyLife;
 		}
 
-		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone){
+		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone && GameManager.canTakeResidu){
 
 			if(enemyLife.name.Contains("Bacteria")){
 				typeResidus = Type.TypeResidus.BACTERIA;

@@ -5,7 +5,7 @@ public class UnitManager : MonoBehaviour {
 
 	public static int NB_MACROPHAGES, NB_CELLS, NB_LYMPHOCYTES_T, NB_LYMPHOCYTES_B, NB_BACTERIES, NB_VIRUS;
 
-	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50, MAX_MACROPHAGES = 50, MAX_LYMPHOCYTES_T = 10, MAX_LYMPHOCYTE_B;
+	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50, MAX_MACROPHAGES = 20, MAX_LYMPHOCYTES_T = 10, MAX_LYMPHOCYTE_B = 10;
 
 	static ObjectifManager objManager;
 
@@ -50,6 +50,7 @@ public class UnitManager : MonoBehaviour {
 	public static void DeathCell(string type){
 		if(type.Contains("Macrophage")){
 			NB_MACROPHAGES--;
+			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(7);
 		}else if(type.Contains("Cell")){
 			NB_CELLS--;
 		}else if(type.Contains("LT")){

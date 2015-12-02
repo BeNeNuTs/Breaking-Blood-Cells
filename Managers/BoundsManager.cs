@@ -13,7 +13,13 @@ public class BoundsManager : MonoBehaviour {
 			Vector3 reflect = Vector3.Reflect(other.transform.right, normal);
 			Vector3 direction = new Vector3(reflect.x, reflect.y, 0);
 
+
+
 			Vector3 diff = (other.transform.position + direction) - other.transform.position;
+
+			/*if((normal.x*diff.x > 0) || (normal.y*diff.y > 0))
+				return;*/
+
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 

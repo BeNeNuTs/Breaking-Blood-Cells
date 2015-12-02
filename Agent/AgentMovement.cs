@@ -17,13 +17,21 @@ public class AgentMovement : MonoBehaviour {
 	[HideInInspector]
 	public Rigidbody2D agentRigidbody;
 
+	public Boundary moveBoundaries;
+
 
 	// Use this for initialization
 	void Awake () {
 		agentRigidbody = GetComponent<Rigidbody2D>();
 		targets = new List<GameObject>();
 		agent = GetComponent<Agent>();
+		moveBoundaries.xMin = -225;
+		moveBoundaries.xMax = 225;
+		moveBoundaries.yMin = -125;
+		moveBoundaries.yMax = 120;
+
 	}
+
 
 	protected virtual void OnTriggerEnter2D(Collider2D other){
 		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
@@ -35,7 +43,7 @@ public class AgentMovement : MonoBehaviour {
 
 	protected virtual void OnTriggerExit2D(Collider2D other){
 		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
-			if(Vector3.Distance(transform.position, other.transform.position) > GetComponent<CircleCollider2D>().radius){
+			if(Vector3.Distance(transform.position, other.transform.position) >= GetComponent<CircleCollider2D>().radius){
 				targets.Remove(other.gameObject);
 			}
 		}
@@ -51,11 +59,23 @@ public class AgentMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	protected virtual void Update () {
+
+
 		if(agent.state == Agent.WIGGLE){
 			Wiggle();
 		}else if(agent.state == Agent.GOTOENEMY){
 			GoToEnemy();
 		}
+
+		
+		transform.position =  new Vector3
+			(
+				Mathf.Clamp (transform.position.x, moveBoundaries.xMin, moveBoundaries.xMax),
+				Mathf.Clamp (transform.position.y, moveBoundaries.yMin, moveBoundaries.yMax),
+				transform.position.z
+				);
+
+
 	}
 
 	protected virtual void GoToEnemy(){
@@ -69,6 +89,7 @@ public class AgentMovement : MonoBehaviour {
 			}
 
 			if(Vector3.Distance(closest.transform.position, transform.position) < stoppingDistance){
+			
 				agent.state = Agent.ATTACK;
 				return;
 			}
@@ -106,12 +127,19 @@ public class AgentMovement : MonoBehaviour {
 	}
 
 	public void UpdateList(List<GameObject> list){
-		for(int i = 0 ; i < list.Count ; i++){
+		for(int i = 0 ; i < list.Count ; i++)
+		{
+
 			if(list[i] == null){
 				list.RemoveAt(i);
 			}else if(!list[i].GetComponent<BoxCollider2D>().enabled){
 				list.RemoveAt(i);
 			}
+			else if(Vector3.Distance(transform.position, list[i].transform.position) > GetComponent<CircleCollider2D>().radius)
+			{
+				list.RemoveAt(i);	
+			}
+		
 		}
 	}
 

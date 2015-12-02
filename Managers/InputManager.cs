@@ -44,6 +44,13 @@ public class InputManager : MonoBehaviour {
 			return;
 		}
 
+		if (GameManager.CellControlled.GetComponent<AgentLife> ().isInfected) 
+		{
+			DeselectAll();
+			return;
+		}
+
+
 		if (Input.GetButtonDown ("Fire2")) {
 			playerTarget = RaycastManager.RaycastAttackEnemy ();
 			GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = false;

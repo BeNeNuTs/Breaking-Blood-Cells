@@ -5,7 +5,7 @@ public class UnitManager : MonoBehaviour {
 
 	public static int NB_MACROPHAGES, NB_CELLS, NB_LYMPHOCYTES_T, NB_LYMPHOCYTES_B, NB_BACTERIES, NB_VIRUS;
 
-	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50;
+	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50, MAX_MACROPHAGES = 50, MAX_LYMPHOCYTES_T = 10, MAX_LYMPHOCYTE_B;
 
 	static ObjectifManager objManager;
 

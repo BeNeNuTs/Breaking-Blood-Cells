@@ -47,12 +47,20 @@ public class BacteriaMovement : AgentMovement {
 				return;
 			}
 
-			if(closest.name.Contains("Cell")){
+			if(closest.name.Contains("Cell"))
+			{
 				base.GoToEnemy();
-			}else if(bacterias.Count < NB_BACTERIAS_TO_ATTACK){
+			}
+			else if(bacterias.Count < NB_BACTERIAS_TO_ATTACK){
 				agent.state = BacteriaAgent.FLEE;
 				return;
 			}
+			else
+			{
+				base.GoToEnemy();
+				return;
+			}
+
 		}else{
 			agent.state = Agent.WIGGLE;
 		}

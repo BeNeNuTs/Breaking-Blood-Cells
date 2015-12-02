@@ -24,6 +24,8 @@ public class ObjectifManager : MonoBehaviour {
 
 	private const float ECART_POSITION = 5.0f;
 
+	public static int ObjectifId;
+
 
 	void Start(){
 		//Debug.Log (File.Exists(Application.dataPath+"\\Xml\\xmlTest.xml"));
@@ -158,6 +160,7 @@ public class ObjectifManager : MonoBehaviour {
 				if (int.Parse(myXmlTextReader.GetAttribute("id")) == id){
 
 					aTrouve = true;
+					ObjectifId = id;
 					initialObjective.description = myXmlTextReader.GetAttribute("description");
 					currentObjective.description = myXmlTextReader.GetAttribute("description");
 

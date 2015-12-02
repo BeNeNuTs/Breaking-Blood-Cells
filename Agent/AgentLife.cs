@@ -18,6 +18,8 @@ public class AgentLife : MonoBehaviour {
 	[HideInInspector]
 	public Image cellLife;
 
+	public bool isInfected = false;
+
 	// Use this for initialization
 	void Awake () {
 		currentLife = startingLife;

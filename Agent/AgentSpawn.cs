@@ -75,7 +75,7 @@ public class AgentSpawn : MonoBehaviour {
 				}
 				break;
 			case TypeSpawn.LB:
-				if(UnitManager.NB_LYMPHOCYTES_B < UnitManager.MAX_LYMPHOCYTE_B)
+				if(UnitManager.NB_LYMPHOCYTES_B < UnitManager.MAX_LYMPHOCYTES_B)
 				{
 					Instantiate(gameManager.LB, transform.position,Quaternion.identity);
 					UnitManager.NB_LYMPHOCYTES_B++;

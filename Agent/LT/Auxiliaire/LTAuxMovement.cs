@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class LTAuxMovement : AgentMovement {
+
+	public static bool backToBase = false;
 	
 	public static bool residus;
 	public static Type.TypeResidus typeResidus;
@@ -23,7 +25,7 @@ public class LTAuxMovement : AgentMovement {
 		unitGenerator = GameObject.FindGameObjectWithTag("Base").GetComponent<UnitGenerator>();
 	}
 
-	protected override void OnTriggerEnter2D(Collider2D other){
+	protected void OnTriggerStay2D(Collider2D other){
 		if(other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)){
 			if(other.name.Contains("Macrophage") && MacrophageAttack.bringResidues){
 				if(other.GetComponent<Agent>().state == MacrophageAgent.BRING_RESIDUS){
@@ -38,7 +40,7 @@ public class LTAuxMovement : AgentMovement {
 	}
 	
 	protected override void Update () {
-		if(agent.state == LTAuxAgent.BACK_TO_BASE){
+		if((agent.state == LTAuxAgent.BACK_TO_BASE || backToBase) && agent.state != LTAuxAgent.ANALYZE){
 			BackToBase();
 		}else if(agent.state == LTAuxAgent.ANALYZE){
 			Analize();
@@ -105,6 +107,8 @@ public class LTAuxMovement : AgentMovement {
 		}
 
 		agent.state = LTAuxAgent.BACK_TO_BASE;
+		backToBase = true;
+
 		return true;
 	}
 

@@ -7,8 +7,6 @@ public class UnitManager : MonoBehaviour {
 
 	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50, MAX_MACROPHAGES = 50, MAX_LYMPHOCYTES_T = 50, MAX_LYMPHOCYTES_B = 50;
 
-	static ObjectifManager objManager;
-
 	void Awake(){
 
 		NB_MACROPHAGES = NB_CELLS = NB_LYMPHOCYTES_T = NB_LYMPHOCYTES_B = NB_BACTERIES = NB_VIRUS = 0;
@@ -37,10 +35,6 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		ShowStats();
-	}
-
-	void Start(){
-		objManager = GameManager.gameManager.GetComponent<ObjectifManager>();
 	}
 
 	public static void ShowStats(){

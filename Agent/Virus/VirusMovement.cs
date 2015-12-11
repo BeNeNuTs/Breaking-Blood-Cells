@@ -82,31 +82,34 @@ public class VirusMovement : AgentMovement {
 		if(timeToDuplicate > timeBetweenDuplicate && UnitManager.NB_VIRUS < UnitManager.MAX_VIRUS){
 			timeToDuplicate = 0f;
 
-			TakeDamageToCellControled(cellLife.startingLife * 0.1f);
-
+		
 			GameObject virus = Instantiate(gameObject, transform.position, Quaternion.identity) as GameObject;
 			virus.GetComponent<AgentLife>().currentLife = virus.GetComponent<AgentLife>().startingLife;
 			virus.GetComponent<AgentLife>().canvas.GetComponent<Canvas>().enabled = true;
 			virus.GetComponent<BoxCollider2D>().enabled = true;
 			virus.GetComponent<CircleCollider2D>().enabled = true;
-
 			virus.GetComponent<Agent>().state = Agent.WIGGLE;
+			UnitManager.NB_VIRUS++;
+
+			TakeDamageToCellControled(cellLife.startingLife * 0.1f);
 		}
 	}
 
 	public void TakeDamageToCellControled(float amount){
 		if(cellLife == null){
-			Destroy (gameObject);
+			GetComponent<AgentLife>().Kill();
 			return;
 		}
 
 		cellLife.currentLife -= amount;
 		if(cellLife.currentLife <= 0){
-			cellLife.DeathByVirus();
-			Destroy (gameObject);
+			cellLife.Kill();
+			GetComponent<AgentLife>().Kill();
 			return;
 		}
 		
 		UpdateLifeCell();
 	}
+	
+
 }

@@ -124,11 +124,11 @@ public class AntibodyAttack : AgentAttack {
 		}
 
 		//CALL MACROPHAGES
-		GameObject[] cell = GameObject.FindGameObjectsWithTag("Cell");
+		/*GameObject[] cell = GameObject.FindGameObjectsWithTag("Cell");
 		foreach(GameObject macro in cell){
 			if(macro.name.Contains("Macrophage")){
 				macro.GetComponent<MacrophageMovement>().GoToAntibody(transform.position);
 			}
-		}
+		}*/
 	}
 }

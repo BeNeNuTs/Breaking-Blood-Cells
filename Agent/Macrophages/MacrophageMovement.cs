@@ -9,11 +9,6 @@ public class MacrophageMovement : AgentMovement {
 
 	void Start(){
 		agentAttack = GetComponent<MacrophageAttack>();
-		GameObject[] LT = GameObject.FindGameObjectsWithTag("LTAux");
-		LTAux = new List<GameObject>();
-		foreach(GameObject GO in LT){
-			LTAux.Add(GO);
-		}
 	}
 
 	protected override void Update () {
@@ -45,6 +40,14 @@ public class MacrophageMovement : AgentMovement {
 	}
 
 	void BringResidus(){
+
+
+		GameObject[] LT = GameObject.FindGameObjectsWithTag("LTAux");
+		LTAux = new List<GameObject>();
+		foreach(GameObject GO in LT){
+			LTAux.Add(GO);
+		}
+
 		if(LTAux == null){
 			agentAttack.RemoveResidus();
 			agent.state = Agent.WIGGLE;
@@ -54,6 +57,8 @@ public class MacrophageMovement : AgentMovement {
 		GameObject closest = GetClosestTarget(LTAux);
 
 		if(closest == null){
+			agentAttack.RemoveResidus();
+			agent.state = Agent.WIGGLE;
 			return;
 		}
 

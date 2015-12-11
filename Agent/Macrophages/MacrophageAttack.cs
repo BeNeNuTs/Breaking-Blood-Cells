@@ -13,9 +13,6 @@ public class MacrophageAttack : AgentAttack {
 	
 
 	void Start(){
-		bringResidues = false;
-		residuesDone = false;
-
 		typeResidus = Type.TypeResidus.NONE;
 	}
 
@@ -26,9 +23,11 @@ public class MacrophageAttack : AgentAttack {
 			return enemyLife;
 		}
 
-		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone && GameManager.canTakeResidu){
+		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone && GameManager.canTakeResidu && Random.Range(0f,1f) > 0.75f){
+
 
 			if(enemyLife.name.Contains("Bacteria")){
+				Debug.Log("TakeResiduBacteria");
 				typeResidus = Type.TypeResidus.BACTERIA;
 				residuBacteriaSprite.SetActive(true);
 			}else{
@@ -44,6 +43,7 @@ public class MacrophageAttack : AgentAttack {
 	}
 
 	public void RemoveResidus(){
+		Debug.Log("RemoveResiduBacteria");
 		residuBacteriaSprite.SetActive(false);
 		residuVirusSprite.SetActive(false);
 		typeResidus = Type.TypeResidus.NONE;

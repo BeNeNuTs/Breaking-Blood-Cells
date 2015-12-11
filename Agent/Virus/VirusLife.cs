@@ -8,6 +8,7 @@ public class VirusLife : AgentLife {
 	void Start(){
 		myMovement = GetComponent<VirusMovement>();
 	}
+	
 
 	public override void TakeDamage (int amount, bool virus = false)
 	{

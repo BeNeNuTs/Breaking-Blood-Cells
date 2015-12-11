@@ -13,12 +13,18 @@ public class AgentLife : MonoBehaviour {
 	protected Agent agent;
 	protected bool isDead;
 
+
+
 	[HideInInspector]
 	public GameObject canvas;
 	[HideInInspector]
 	public Image cellLife;
 
 	public bool isInfected = false;
+
+	public GameObject DeathExplosion;
+	public float scaleExplosion = 1f;
+
 
 	// Use this for initialization
 	void Awake () {
@@ -33,13 +39,13 @@ public class AgentLife : MonoBehaviour {
 	protected virtual void Update () {
 
 		// Pour pouvoir tester si les méthodes fonctionnent
-		if(Input.GetKeyDown(KeyCode.A)){
+		/*if(Input.GetKeyDown(KeyCode.A)){
 			if(agent.state == MacrophageAgent.BRING_RESIDUS && name.Contains("Macrophage")){
 				TakeDamage(10);
 			}
 		}else if(Input.GetKeyDown(KeyCode.L)){
 			AddLife(10);
-		}
+		}*/
 
 		UpdatePositionCanvas();
 	}
@@ -70,6 +76,8 @@ public class AgentLife : MonoBehaviour {
 		{
 			if(!virus){
 				Death ();
+			}else{
+				isDead = true;
 			}
 			return;
 		}
@@ -96,15 +104,19 @@ public class AgentLife : MonoBehaviour {
 	{
 		UnitManager.DeathCell(name);
 
+		GameObject explosion = Instantiate (DeathExplosion, transform.position, Quaternion.identity) as GameObject;
+		explosion.transform.localScale = explosion.transform.localScale * scaleExplosion;
+
 		isDead = true;
 
 		Destroy(canvas);
-		Destroy(this.gameObject);
+		Destroy(gameObject);
 	}
 
-	public void DeathByVirus ()
+	public void Kill ()
 	{
 		Death();
+
 	}
 
 	Vector3 posCanvas { 

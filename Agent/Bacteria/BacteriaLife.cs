@@ -11,6 +11,8 @@ public class BacteriaLife : AgentLife {
 	float timeToWait;
 	float percentageGainLife = 0.1f;
 
+
+
 	void Start(){
 		timeToWait = Random.Range(timeMinToWait, timeMaxToWait);
 	}
@@ -29,6 +31,7 @@ public class BacteriaLife : AgentLife {
 			Duplicate();
 		}
 	}
+	
 
 	/** Permet de dupliquer l'agent s'il possède toute sa vie et en divant sa vie par 2 */
 	void Duplicate(){

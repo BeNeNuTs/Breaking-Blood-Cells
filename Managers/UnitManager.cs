@@ -3,14 +3,14 @@ using System.Collections;
 
 public class UnitManager : MonoBehaviour {
 
-	public static int NB_MACROPHAGES, NB_CELLS, NB_LYMPHOCYTES_T, NB_LYMPHOCYTES_B, NB_BACTERIES, NB_VIRUS;
-
+	public static int NB_MACROPHAGES, NB_LYMPHOCYTES_T, NB_LYMPHOCYTES_B, NB_BACTERIES, NB_VIRUS,NB_CELLS;
 
 	public static int MAX_BACTERIES = 50, MAX_VIRUS = 50, MAX_MACROPHAGES = 50, MAX_LYMPHOCYTES_T = 50, MAX_LYMPHOCYTES_B = 50;
 
 	void Awake(){
 
 		NB_MACROPHAGES = NB_CELLS = NB_LYMPHOCYTES_T = NB_LYMPHOCYTES_B = NB_BACTERIES = NB_VIRUS = 0;
+
 
 		GameObject[] cells = GameObject.FindGameObjectsWithTag("Cell");
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -45,9 +45,10 @@ public class UnitManager : MonoBehaviour {
 	public static void DeathCell(string type){
 		if(type.Contains("Macrophage")){
 			NB_MACROPHAGES--;
-			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(7);
+
 		}else if(type.Contains("Cell")){
 			NB_CELLS--;
+			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(7);
 		}else if(type.Contains("LT")){
 			NB_LYMPHOCYTES_T--;
 		}else if(type.Contains("LB")){

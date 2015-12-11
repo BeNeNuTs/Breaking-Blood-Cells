@@ -35,37 +35,37 @@ public class VirusAttack : AgentAttack {
 				GetComponent<VirusMovement>().target = enemyLife.gameObject;
 
 
-					AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
-					if(enemyMovement != null){
-						enemyMovement.agentRigidbody.velocity = Vector2.zero;
-						enemyMovement.enabled = false;
-					}
-
-					AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
-					if(enemyAttack != null){
-						enemyAttack.enabled = false;
-					}
-
-					BoxCollider2D boxCollider = enemyLife.gameObject.GetComponent<BoxCollider2D>();
-					if(boxCollider != null){
-						boxCollider.enabled = false;
-					}
-
-					CircleCollider2D circleCollider = enemyLife.gameObject.GetComponent<CircleCollider2D>();
-					if(circleCollider != null){
-						circleCollider.enabled = false;
-					}
-
-
-					GetComponent<CircleCollider2D>().enabled = false;
-					myLife.canvas.GetComponent<Canvas>().enabled = false;
-
-
-					StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));
-
-					agent.state = VirusAgent.CONTROL;
+				AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
+				if(enemyMovement != null){
+					enemyMovement.agentRigidbody.velocity = Vector2.zero;
+					enemyMovement.enabled = false;
 				}
+
+				AgentAttack enemyAttack = enemyLife.gameObject.GetComponent<AgentAttack>();
+				if(enemyAttack != null){
+					enemyAttack.enabled = false;
+				}
+
+				BoxCollider2D boxCollider = enemyLife.gameObject.GetComponent<BoxCollider2D>();
+				if(boxCollider != null){
+					boxCollider.enabled = false;
+				}
+
+				CircleCollider2D circleCollider = enemyLife.gameObject.GetComponent<CircleCollider2D>();
+				if(circleCollider != null){
+					circleCollider.enabled = false;
+				}
+
+
+				GetComponent<CircleCollider2D>().enabled = false;
+				myLife.canvas.GetComponent<Canvas>().enabled = false;
+
+
+				StartCoroutine(FadeBlack(enemyLife.gameObject.GetComponentInChildren<SpriteRenderer>()));
+
+				agent.state = VirusAgent.CONTROL;
 			}
+		}
 			
 		return enemyLife;
 	}

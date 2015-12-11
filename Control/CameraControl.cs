@@ -21,8 +21,8 @@ public class CameraControl : MonoBehaviour {
 	public Boundary CurrentBoundary;
 
 
-	public static bool zoomEnabled = false;
-	public static bool moveEnabled = false;
+	public static bool zoomEnabled = true;
+	public static bool moveEnabled = true;
 
 	public float zoom = 0;
 

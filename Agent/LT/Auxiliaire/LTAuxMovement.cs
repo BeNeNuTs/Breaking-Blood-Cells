@@ -17,9 +17,7 @@ public class LTAuxMovement : AgentMovement {
 	UnitGenerator unitGenerator;
 	
 	void Start(){
-		typeResidus = Type.TypeResidus.NONE;
-		residus = false;
-		
+
 		time = 0f;
 
 		unitGenerator = GameObject.FindGameObjectWithTag("Base").GetComponent<UnitGenerator>();
@@ -65,31 +63,57 @@ public class LTAuxMovement : AgentMovement {
 		Vector3 diff = unitGenerator.transform.position - transform.position;
 		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
-		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
+		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime * 2;
 	}
 	
 	void Analize(){
 		agentRigidbody.velocity = Vector2.zero;
 		
 		//AJOUT D'ANIM D'ANALISE
-		
+
+
 		time += Time.deltaTime;
 		
 		if(time > timeToAnalize){
+
 			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(3);
 			if(typeResidus == Type.TypeResidus.BACTERIA){
 				Debug.Log("GENERER CYTOTOXIQUE");
 				residuBacteriaSprite.SetActive(false);
-				unitGenerator.Generate(Type.TypeUnit.LT_CYTOTOXIQUE);
+				if(GameManager.gameManager.GetComponent<GameManager>().simulation)
+				{
+					GameManager.gameManager.GetComponent<LevelAgentManager>().LTCytoSpawn.enabled = true;
+					GameManager.gameManager.GetComponent<LevelAgentManager>().takeResidu = false;
+				}
+				else
+					GameManager.gameManager.GetComponent<LevelBacteriaManager>().spawnCyto.enabled = true;
+
+				GameManager.canTakeResidu = false;
+
+				Instantiate(GameManager.gameManager.GetComponent<GameManager>().LTCyto,transform.position,Quaternion.identity);
+				UnitManager.NB_LYMPHOCYTES_T++;
+
 			}else if(typeResidus == Type.TypeResidus.VIRUS){
 				Debug.Log("GENERER LB");
 				residuVirusSprite.SetActive(false);
-				unitGenerator.Generate(Type.TypeUnit.LB);
+
+				if(GameManager.gameManager.GetComponent<GameManager>().simulation)
+				{
+					GameManager.gameManager.GetComponent<LevelAgentManager>().LBSpawn.enabled = true;
+					GameManager.gameManager.GetComponent<LevelAgentManager>().takeResidu = false;
+				}
+				else
+					GameManager.gameManager.GetComponent<LevelVirusManager>().spawnLB.enabled = true;
+
+				//unitGenerator.Generate(Type.TypeUnit.LB);
 			}
 			
 			time = 0f;
 
-			Destroy(gameObject);
+			backToBase = true;
+	
+			GetComponent<AgentLife>().Kill();
+
 		}
 	}
 	
@@ -97,9 +121,12 @@ public class LTAuxMovement : AgentMovement {
 		if(residus || _typeResidus == Type.TypeResidus.NONE){
 			return false;
 		}
+
+		GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (9);
 		
 		residus = true;
 		typeResidus = _typeResidus;
+		Debug.Log("type : "+typeResidus);
 		if(typeResidus == Type.TypeResidus.BACTERIA){
 			residuBacteriaSprite.SetActive(true);
 		}else if(typeResidus == Type.TypeResidus.VIRUS){
@@ -107,7 +134,7 @@ public class LTAuxMovement : AgentMovement {
 		}
 
 		agent.state = LTAuxAgent.BACK_TO_BASE;
-		backToBase = true;
+
 
 		return true;
 	}

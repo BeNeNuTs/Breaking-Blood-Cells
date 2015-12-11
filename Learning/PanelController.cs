@@ -13,9 +13,14 @@ public class PanelController : MonoBehaviour
 	Text continueText;
 	Image panelImage;
 
+	bool alreadyPlayed = false;
+	bool hasPoped = false;
+
 	// Use this for initialization
 	void Start () 
 	{
+
+
 		foreach (Text text in GetComponentsInChildren<Text>()) 
 		{
 			panelTexts.Add(text);
@@ -23,13 +28,40 @@ public class PanelController : MonoBehaviour
 
 		continueText = GameObject.Find ("PressEnter").GetComponent<Text> ();
 		panelImage = GetComponent<Image> ();
+
+
+
+
+
+
 	}
-	
+
+	void popPanel()
+	{
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", Vector3.one, "time", 0.5f, "easetype", iTween.EaseType.easeOutBack, "ignoretimescale",true));
+
+	}
+
 	// Update is called once per frame
 	void Update () 
 	{
+		if (alreadyPlayed)
+			return;
+
 		if (isPanelActive) 
 		{
+
+
+
+			if(!hasPoped)
+			{
+
+				continueText.gameObject.transform.parent = transform;
+				transform.localScale = Vector3.zero;
+
+				popPanel();
+				hasPoped = true;
+			}
 			GameManager.Pause();
 			if(Input.GetButtonDown("Submit"))
 			{
@@ -42,8 +74,9 @@ public class PanelController : MonoBehaviour
 						text.enabled = false;
 
 					continueText.enabled = false;
+					continueText.gameObject.transform.parent = transform.parent;
 					GameManager.Unpause();
-
+					alreadyPlayed = true;
 					return;
 				}
 			}

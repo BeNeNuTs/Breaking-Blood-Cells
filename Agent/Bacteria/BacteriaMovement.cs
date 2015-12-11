@@ -12,6 +12,12 @@ public class BacteriaMovement : AgentMovement {
 	protected override void OnTriggerEnter2D(Collider2D other){
 		base.OnTriggerEnter2D(other);
 
+		if (other.CompareTag ("LTAux") && other.GetType () == typeof(BoxCollider2D)) {
+			if (!targets.Contains (other.gameObject)) {
+				targets.Add (other.gameObject);
+			}
+		}
+
 		if(other.CompareTag(gameObject.tag) && other.GetType() == typeof(BoxCollider2D)){
 			if(!bacterias.Contains(other.gameObject)){
 				bacterias.Add(other.gameObject);

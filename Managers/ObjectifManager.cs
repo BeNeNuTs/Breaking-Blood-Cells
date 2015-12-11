@@ -13,7 +13,7 @@ public class ObjectifManager : MonoBehaviour {
 	Objectif initialObjective = new Objectif();
 
 	[HideInInspector]
-	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6, LOSEMACROPHAGES = 7};
+	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6, LOSECELLS = 7, CUTSCENE = 8, BRINGRESIDU = 9};
 
 	public GameObject ObjectifName;
 	public GameObject Progression;
@@ -26,27 +26,36 @@ public class ObjectifManager : MonoBehaviour {
 
 	public static int ObjectifId;
 	public static bool blend;
+	public static bool cutscene;
 
 	public static string learning;
-
-
+	bool simulation;
 
 	void Start(){
+		simulation = GameManager.gameManager.GetComponent<GameManager> ().simulation;
+		if (simulation) 
+		{
+			return;
+		}
 		//Debug.Log (File.Exists(Application.dataPath+"\\Xml\\xmlTest.xml"));
-		xmlPath = Application.dataPath + "\\Xml\\xmlTest.xml";
-		load (Application.dataPath + "\\Xml\\xmlTest.xml", 0);
+		//xmlPath = Application.dataPath + "\\Xml\\xmlTest.xml";
+		xmlPath = Application.dataPath+xmlPath;
+		load (xmlPath, 0);
 		/*foreach(int i in objectifCourant.tableDesObjectifs.Keys){
 			Debug.Log (i + " -> " + objectifCourant.tableDesObjectifs[i]);
 		}*/
 	}
 
 	void OnLevelWasLoaded(int level){
-		xmlPath = Application.dataPath+"\\Xml\\xmlTest.xml";
+
 	}
 
 	void Update()
 	{
-
+		if (simulation) 
+		{
+			return;
+		}
 
 		//Debug.Log (currentObjective.description);
 
@@ -56,14 +65,24 @@ public class ObjectifManager : MonoBehaviour {
 
 			//Debug.Log (i + " -> " + currentObjective.tableDesObjectifs[i]);
 
-			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i ==7)
+			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6)
 				Progression.GetComponent<Text>().text = currentObjective.tableDesObjectifs[i].ToString()+ " / " + initialObjective.tableDesObjectifs[i].ToString();
 			else if(i == 5)
 			   Progression.GetComponent<Text>().text = RoundValue((float)currentObjective.tableDesObjectifs[i],1).ToString();
+			else if(i == 7 || i == 9)
+			{
+				ObjectifName.GetComponent<Text> ().text = currentObjective.description;
+				Progression.GetComponent<Text>().text = "";
+			}
+			else if(i == 8)
+			{
+				ObjectifName.GetComponent<Text> ().text = "";
+				Progression.GetComponent<Text>().text = "";
+			}
 			/*else if(i == 7)
 				Progression.GetComponent<Text>().text = "";*/
 
-
+		
 
 			//Il est important de mettre cette instruction à la fin sinon on peut clear l'objectif et demander l'affichage ensuite
 			//Ce qui provoque une exception
@@ -75,8 +94,9 @@ public class ObjectifManager : MonoBehaviour {
 		
 		if (currentObjective.tableDesObjectifs.Count == 0) 
 		{
-			ObjectifName.GetComponent<Text> ().text = "MISSION COMPLETE !";
+			ObjectifName.GetComponent<Text> ().text = "";
 			Progression.GetComponent<Text>().text = "";
+			GameManager.victory();
 			return;
 		}
 
@@ -92,7 +112,25 @@ public class ObjectifManager : MonoBehaviour {
 			if(tmp >= 0)
 				currentObjective.tableDesObjectifs[label] = tmp;
 			
-			if(isCurrentObjectiveComplete()){
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
+				initialObjective.clear();
+				currentObjective.clear();
+				++idObjectif;
+				load (xmlPath, idObjectif);
+			}
+		}
+	}
+
+	// Objectifs qui se décrémentent par entier (tuer bactérie, etc...)
+	public void updateGoal(bool isCutsceneFinished){
+		if (currentObjective.tableDesObjectifs.ContainsKey (8)) {
+			int tmp = (int) currentObjective.tableDesObjectifs[8];
+			++tmp;
+			if(tmp >= 0)
+				currentObjective.tableDesObjectifs[8] = tmp;
+
+			
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
 				initialObjective.clear();
 				currentObjective.clear();
 				++idObjectif;
@@ -110,7 +148,7 @@ public class ObjectifManager : MonoBehaviour {
 			currentObjective.tableDesObjectifs[label] = tmp;
 
 			
-			if(isCurrentObjectiveComplete()){
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
 				currentObjective.clear();
 				++idObjectif;
 				load (xmlPath, idObjectif);
@@ -126,7 +164,7 @@ public class ObjectifManager : MonoBehaviour {
 				currentObjective.tableDesObjectifs.Remove(label);
 			}
 
-			if(isCurrentObjectiveComplete()){
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
 				currentObjective.clear();
 				++idObjectif;
 				load (xmlPath, idObjectif);
@@ -138,13 +176,12 @@ public class ObjectifManager : MonoBehaviour {
 	{
 		foreach (int i in currentObjective.tableDesObjectifs.Keys) 
 		{
-			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 7) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
+			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 7 || i == 8 || i==9) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
 				return false;
 			else if(i == 5 && (float)currentObjective.tableDesObjectifs[i] > 0.0f)
 				return false;
 			else if(i == 2)
 				return false;
-
 		}
 		return true;
 	}
@@ -175,10 +212,12 @@ public class ObjectifManager : MonoBehaviour {
 					learning = myXmlTextReader.GetAttribute("learning");
 
 					blend = bool.Parse(myXmlTextReader.GetAttribute("blend"));
+					cutscene = bool.Parse(myXmlTextReader.GetAttribute("cutscene"));
 
+					Debug.Log(cutscene);
 
 					tag = int.Parse(myXmlTextReader.GetAttribute("tag"));
-					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6 || tag == 7)
+					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6 || tag == 7 || tag==8 || tag == 9)
 					{ // Si on a ces tags, on a forcément un int dans value
 						initialObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
 						currentObjective.tableDesObjectifs.Add(tag, 0);
@@ -206,7 +245,7 @@ public class ObjectifManager : MonoBehaviour {
 		}
 
 		if (aTrouve) {
-			StartCoroutine(GameManager.gameManager.GetComponent<GameManager>().makeTransition (1, 1));
+			//StartCoroutine(GameManager.gameManager.GetComponent<LevelBacteriaManager>().makeTransition (1, 1));
 		} else {
 			Debug.Log ("N'a pas trouvé.\n");
 		}

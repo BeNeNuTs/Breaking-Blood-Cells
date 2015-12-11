@@ -8,7 +8,7 @@ public class BoundsManager : MonoBehaviour {
 	public float offset = -5f;
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if((other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)) || (other.CompareTag("Enemy") && other.GetType() == typeof(BoxCollider2D))){
+		if((other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)) || (other.CompareTag("Enemy") && other.GetType() == typeof(BoxCollider2D)) || (other.CompareTag("LTAux") && other.GetType() == typeof(BoxCollider2D))){
 
 			Vector3 reflect = Vector3.Reflect(other.transform.right, normal);
 			Vector3 direction = new Vector3(reflect.x, reflect.y, 0);
@@ -25,7 +25,7 @@ public class BoundsManager : MonoBehaviour {
 
 			AgentMovement agentMovement = other.gameObject.GetComponent<AgentMovement>();
 			agentMovement.agentRigidbody.rotation = rot_z;
-			other.gameObject.GetComponent<Rigidbody2D>().AddForce(normal * 1200);
+			//other.gameObject.GetComponent<Rigidbody2D>().AddForce(normal * 10);
 
 			/*AgentMovement agentMovement = other.gameObject.GetComponent<AgentMovement>();
 			if(normal.x == 0f){

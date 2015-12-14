@@ -79,9 +79,9 @@ public class InputManager : MonoBehaviour {
 				break;
 			}
 
-			GameManager.CellControlled.GetComponent<MoveToPoint> ().DefineNewDestination (playerTarget.GetComponent<Rigidbody2D> ().position);
+			GameManager.CellControlled.GetComponent<MoveToPoint> ().DefineNewDestination (playerTarget.transform.position);
 
-			if (Vector2.Distance (GameManager.CellControlled.GetComponent<Rigidbody2D> ().position, playerTarget.GetComponent<Rigidbody2D> ().position) < 10) {
+			if (Vector2.Distance (GameManager.CellControlled.transform.position, playerTarget.transform.position) < 10) {
 				GameManager.CellControlled.GetComponent<AgentMovement> ().enabled = true;
 				GameManager.CellControlled.GetComponent<MoveToPoint> ().enabled = false;
 

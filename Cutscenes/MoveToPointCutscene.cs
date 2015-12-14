@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseMacroArrival : MonoBehaviour {
+public class MoveToPointCutscene : Cutscene {
 
 	
 
@@ -11,13 +11,18 @@ public class BaseMacroArrival : MonoBehaviour {
 	float progress;
 	
 	bool arrived = false;
+	public bool disapear = false;
 	//160 25 0
 
 	
 	// Use this for initialization
 	void Start () 
 	{
+		if(GetComponent<SpriteRenderer> () != null)
+			GetComponent<SpriteRenderer> ().enabled = true;
 		initialPosition = transform.position;
+		//Debug.Log (initialPosition);
+		progress = 0.0f;
 		
 	}
 	
@@ -31,7 +36,9 @@ public class BaseMacroArrival : MonoBehaviour {
 		} 
 		else  
 		{
-			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(true);
+			GameManager.gameManager.GetComponent<ObjectifManager>().updateCutsceneGoal();
+			if(disapear)
+				gameObject.SetActive(false);
 		}
 	}
 }

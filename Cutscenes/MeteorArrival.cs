@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeteorArrival : MonoBehaviour {
+public class MeteorArrival : Cutscene {
 
 	public GameObject meteor;
 	public GameObject rocks;
@@ -69,7 +69,7 @@ public class MeteorArrival : MonoBehaviour {
 
 		rocks.SetActive (true);
 		yield return new WaitForSeconds (3.0f);
-		GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(true);
+		GameManager.gameManager.GetComponent<ObjectifManager>().updateCutsceneGoal();
 
 	}
 }

@@ -52,6 +52,8 @@ public class CameraControl : MonoBehaviour {
 		zoomEnabled = enableControl;
 		moveEnabled = enableControl;
 
+		GameManager.gameManager.GetComponent<ObjectifManager> ().endBlendObjectif ();
+
 	}
 
 	// Update is called once per frame

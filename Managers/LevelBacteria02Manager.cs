@@ -8,30 +8,24 @@ public class LevelBacteria02Manager : MonoBehaviour {
 
 	List<bool> ObjectifDone = new List<bool>();
 
-	//blends
-	//Blend LT
-
-
-	List<float> times = new List<float> ();
-	List<Vector3> positions = new List<Vector3> ();
-	List<float> zooms = new List<float> ();
-	List<GameObject> objectToActive = new List<GameObject> ();
 	
 	//Variables de spawn
 	public AgentSpawn spawnMacrophage;
 	public List<AgentSpawn> spawnBacteria;
 
-	public GameObject LTAuxZero;
+	//Variables spécifiques au niveau
+	public GameObject FirstLTAux;
+	public GameObject ChefMacro;
 
-	//Variables cinématiques
-	public List<GameObject> cutscenes;
-	public int idCutscene = 0;
+
 
 	// Use this for initialization
 	void Start () 
 	{
+		UnitManager.CountCells ();
+		Debug.Log (ObjectifManager.nbObjectifs);
 		//Pour chaque objectif
-		for (int i = 0; i < 20; i++) 
+		for (int i = 0; i < ObjectifManager.nbObjectifs; i++) 
 		{
 			ObjectifDone.Add(false);
 		}
@@ -40,7 +34,10 @@ public class LevelBacteria02Manager : MonoBehaviour {
 		UnitManager.MAX_MACROPHAGES = 15; //10
 		UnitManager.MAX_LYMPHOCYTES_T = 0;
 
-		spawnMacrophage.spawnRate = 5; //20
+		spawnMacrophage.spawnRate = 20;
+		spawnBacteria [0].enabled = true;
+		spawnBacteria [1].enabled = false;
+		spawnBacteria [2].enabled = false;
 
 	}
 	 
@@ -48,38 +45,54 @@ public class LevelBacteria02Manager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (ObjectifManager.cutscene) 
+
+		if (UnitManager.NB_CELLS == 0) 
 		{
-			Debug.Log("Cutscenes");
-			cutscenes[idCutscene++].SetActive(true);
-			ObjectifManager.cutscene = false;
+			Debug.Log("All Cells dead");
+			GameManager.gameOver();
 		}
 
-		GameObject learning = GameObject.Find (ObjectifManager.learning);
 
-		if (learning != null) 
-		{
-			if(learning.GetComponent<PanelController>()!= null)
-				learning.GetComponent<PanelController> ().isPanelActive = true;
-		} 
+		if (ObjectifManager.ObjectifId == 3 && !ObjectifDone [3]) 
+		{	
+			UnitManager.MAX_BACTERIES = 50;
+			UnitManager.MAX_MACROPHAGES = 5;
 
-		if (ObjectifManager.ObjectifId == 2 && !ObjectifDone [2]) 
+			foreach(AgentSpawn bacteriaSpawn in spawnBacteria)
+			{
+				bacteriaSpawn.spawnRate = 3;
+			}
+			
+			ObjectifDone [3] = true;
+		}
+
+		if (ObjectifManager.ObjectifId == 7 && !ObjectifDone [7]) 
 		{	
 			UnitManager.MAX_BACTERIES = 100;
-			UnitManager.MAX_MACROPHAGES = 10;
-
+			UnitManager.MAX_MACROPHAGES = 8;
+			spawnBacteria [1].enabled = true;
+			
 			foreach(AgentSpawn bacteriaSpawn in spawnBacteria)
 			{
 				bacteriaSpawn.spawnRate = 1;
 			}
 			
-			ObjectifDone [2] = true;
+			ObjectifDone [7] = true;
 		}
 
-		if (ObjectifManager.ObjectifId == 3 && !ObjectifDone [3]) 
+		if (ObjectifManager.ObjectifId == 10 && !ObjectifDone [10]) 
 		{	
-			UnitManager.MAX_MACROPHAGES = 20;
+			spawnBacteria [2].enabled = true;
+			ObjectifDone [10] = true;
+		}
+
+		if (ObjectifManager.ObjectifId == 15 && !ObjectifDone [15]) 
+		{	
+			GameManager.canTakeResidu = true;
+
+			UnitManager.MAX_MACROPHAGES = 10;
 			UnitManager.MAX_BACTERIES = 70;
+
 			foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
 			{
 				AgentAttack attack = enemy.GetComponent<AgentAttack>();
@@ -89,50 +102,24 @@ public class LevelBacteria02Manager : MonoBehaviour {
 				}
 			}
 
-			//Blend on LT
-
-
+			
 			foreach(AgentSpawn bacteriaSpawn in spawnBacteria)
 			{
 				bacteriaSpawn.spawnRate = 5;
 			}
 			
-			ObjectifDone [3] = true;
+			ObjectifDone [15] = true;
 		}
 
+		if (ObjectifManager.ObjectifId == 16 && !ObjectifDone [16]) 
+		{	
+			GameManager.canTakeResidu = false;
+			
+			ObjectifDone [16] = true;
+		}
 	
 	}
 
 
 
-	public  IEnumerator multipleBlends(List<float> timeBlends, List<Vector3> positions, List<float> zooms, List<GameObject> toActive, float delay, bool EnableControl)
-	{
-		CameraControl.moveEnabled = false;
-		CameraControl.zoomEnabled = false;
-
-		yield return new WaitForSeconds (delay);
-		for(int i = 0 ; i < timeBlends.Count; i++) 
-		{
-			StartCoroutine (CameraControl.BlendCameraTo (positions [i], zooms[i], timeBlends[i], false));
-			yield return new WaitForSeconds (2*timeBlends[i]+1.0f);
-
-			if (toActive[i] != null) 
-			{
-				if(toActive[i].GetComponent<PanelController>()!= null)
-					toActive[i].GetComponent<PanelController> ().isPanelActive = true;
-			} 
-
-			yield return new WaitForSeconds (1.0f);
-		}
-
-		timeBlends.Clear ();
-		positions.Clear ();
-		zooms.Clear ();
-		toActive.Clear ();
-
-		CameraControl.moveEnabled = EnableControl;
-		CameraControl.zoomEnabled = EnableControl;
-
-
-	}
 }

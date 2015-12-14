@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
 	//Variables d'écran Pause/Victoire/Défaite
 	public static GameObject gameOverScreen;
-	public static GameObject victoryScreen;
+	public GameObject victoryScreen;
 	public static GameObject pauseMenu;
 
 	//Variables de limitations des agents
@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
 	public static bool gameLost = false;
 
 	public bool simulation = false;
-	
 
 
 	void Awake()
@@ -48,28 +47,58 @@ public class GameManager : MonoBehaviour
 
 	void Start()
 	{
+
 		MacrophageAttack.bringResidues = false;
 		MacrophageAttack.residuesDone = false;
 		LTAuxMovement.residus = false;
 		LTAuxMovement.typeResidus = Type.TypeResidus.NONE;
 		gameOverScreen = GameObject.FindGameObjectWithTag ("GameOverScreen");
 		gameOverScreen.SetActive (false);
-		victoryScreen = GameObject.FindGameObjectWithTag ("VictoryScreen");
-		victoryScreen.SetActive (false);
+		pauseMenu = GameObject.FindGameObjectWithTag ("PauseScreen");
+		pauseMenu.SetActive (false);
+		/*victoryScreen = GameObject.FindGameObjectWithTag ("VictoryScreen");
+		victoryScreen.SetActive (false);*/
 	}
 
-	public static void Pause()
+	void Update()
+	{
+		if (Input.GetButtonDown ("Pause")) 
+		{
+			if(!isPaused)
+				Pause();
+			else if(pauseMenu.activeSelf)//Pour vérifier qu'on est dans le menu pause car les panneaux mettent le jeu en pause
+				Unpause();
+		}
+	}
+
+	public static void PanelPause()
 	{
 		Time.timeScale = 0f;
 		isPaused = true;
 
 	}
 
-	public static void Unpause()
+	public static void PanelUnpause()
 	{
 		Time.timeScale = 1f;
 		isPaused = false;	
 	}
+
+	public void Pause()
+	{
+		pauseMenu.SetActive (true);
+		Time.timeScale = 0f;
+		isPaused = true;
+		
+	}
+	
+	public void Unpause()
+	{
+		pauseMenu.SetActive (false);
+		Time.timeScale = 1f;
+		isPaused = false;	
+	}
+
 
 	public static void gameOver()
 	{
@@ -100,26 +129,31 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		if (GameManager.gameManager.GetComponent<LevelBacteria01Manager> () != null)
-			GameManager.gameManager.GetComponent<LevelBacteria01Manager> ().victoryLevelScreen.SetActive (true);
-
-
-		//victoryScreen.SetActive (true);
+		gameManager.GetComponent<GameManager>().victoryScreen.SetActive (true);
 	}
 
 	public void backToMenu()
 	{
-		//BackToMenu
+		ObjectifManager.idObjectif = 0;
+		Time.timeScale = 1f;
+		isPaused = false;
+		Application.LoadLevel ("MainMenu");
 	}
 
-	public void nextLevel()
+	public void loadLevel(int i)
 	{
-		//nextLevel
+		ObjectifManager.idObjectif = 0;
+		Time.timeScale = 1f;
+		isPaused = false;
+		Application.LoadLevel("Level"+i);
 	}
-
+	
 	public void restart()
 	{
-		//Restart
+		ObjectifManager.idObjectif = 0;
+		Time.timeScale = 1f;
+		isPaused = false;
+		Application.LoadLevel (Application.loadedLevelName);
 	}
 
 

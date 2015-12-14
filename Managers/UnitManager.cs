@@ -9,12 +9,20 @@ public class UnitManager : MonoBehaviour {
 
 	void Awake(){
 
+		CountCells ();
+
+		ShowStats();
+	}
+
+	public static void CountCells()
+	{
+
 		NB_MACROPHAGES = NB_CELLS = NB_LYMPHOCYTES_T = NB_LYMPHOCYTES_B = NB_BACTERIES = NB_VIRUS = 0;
-
-
+		
+		
 		GameObject[] cells = GameObject.FindGameObjectsWithTag("Cell");
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-
+		
 		foreach(GameObject cell in cells){
 			if(cell.name.Contains("Macrophage")){
 				NB_MACROPHAGES++;
@@ -26,7 +34,7 @@ public class UnitManager : MonoBehaviour {
 				NB_LYMPHOCYTES_B++;
 			}
 		}
-
+		
 		foreach(GameObject enemy in enemies){
 			if(enemy.name.Contains("Bacteria")){
 				NB_BACTERIES++;
@@ -35,7 +43,6 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 
-		ShowStats();
 	}
 
 	public static void ShowStats(){
@@ -43,21 +50,26 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public static void DeathCell(string type){
-		if(type.Contains("Macrophage")){
+		if (type.Contains ("Macrophage")) {
 			NB_MACROPHAGES--;
 
-		}else if(type.Contains("Cell")){
+		} else if (type.Contains ("Cell")) {
 			NB_CELLS--;
-			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(7);
-		}else if(type.Contains("LT")){
+			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (7);
+		} else if (type.Contains ("LT")) {
 			NB_LYMPHOCYTES_T--;
-		}else if(type.Contains("LB")){
+			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (12);
+		} else if (type.Contains ("LB")) {
 			NB_LYMPHOCYTES_B--;
-		}else if(type.Contains("Bacteria")){
+		} else if (type.Contains ("Bacteria")) 
+		{
 			NB_BACTERIES--;
-			GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(0);
-		}else if(type.Contains("Virus")){
+			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (0);
+		} else if (type.Contains ("Virus")) {
 			NB_VIRUS--;
-		}
+		} /*else if (type.Contains ("Base")) 
+		{
+			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (13);
+		}*/
 	}
 }

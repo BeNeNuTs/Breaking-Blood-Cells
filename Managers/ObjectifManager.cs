@@ -13,22 +13,23 @@ public class ObjectifManager : MonoBehaviour {
 	Objectif initialObjective = new Objectif();
 
 	[HideInInspector]
-	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, CREATEANTIBODIES = 6, LOSECELLS = 7, CUTSCENE = 8, BRINGRESIDU = 9};
+	public enum tag {KILLBACTERIA = 0, KILLVIRUS = 1, GOTO = 2, ANALYZEBACTERIA = 3, ANALYZEVIRUS = 4, SURVIVE = 5, 
+		CREATEANTIBODIES = 6, LOSECELLS = 7, CUTSCENE = 8, BRINGRESIDU = 9, BLEND=10, LEARNING = 11, LOSELTCYTO = 12, DESTROYBASE = 13,
+	WAIT = 14};
 
 	public GameObject ObjectifName;
 	public GameObject Progression;
 
 	public String xmlPath;
 
-	private static int idObjectif = 0;
+	public static int idObjectif = 0;
 
 	private const float ECART_POSITION = 5.0f;
 
 	public static int ObjectifId;
-	public static bool blend;
-	public static bool cutscene;
 
-	public static string learning;
+	public static int nbObjectifs;
+	
 	bool simulation;
 
 	void Start(){
@@ -44,6 +45,8 @@ public class ObjectifManager : MonoBehaviour {
 		/*foreach(int i in objectifCourant.tableDesObjectifs.Keys){
 			Debug.Log (i + " -> " + objectifCourant.tableDesObjectifs[i]);
 		}*/
+
+	
 	}
 
 	void OnLevelWasLoaded(int level){
@@ -65,16 +68,14 @@ public class ObjectifManager : MonoBehaviour {
 
 			//Debug.Log (i + " -> " + currentObjective.tableDesObjectifs[i]);
 
-			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6)
+			if(i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 9 || i == 13)
 				Progression.GetComponent<Text>().text = currentObjective.tableDesObjectifs[i].ToString()+ " / " + initialObjective.tableDesObjectifs[i].ToString();
-			else if(i == 5)
-			   Progression.GetComponent<Text>().text = RoundValue((float)currentObjective.tableDesObjectifs[i],1).ToString();
-			else if(i == 7 || i == 9)
+			else if(i == 7 || i == 12)
 			{
 				ObjectifName.GetComponent<Text> ().text = currentObjective.description;
 				Progression.GetComponent<Text>().text = "";
 			}
-			else if(i == 8)
+			else if(i == 8 || i == 10 || i == 11 || i == 14)
 			{
 				ObjectifName.GetComponent<Text> ().text = "";
 				Progression.GetComponent<Text>().text = "";
@@ -84,11 +85,6 @@ public class ObjectifManager : MonoBehaviour {
 
 		
 
-			//Il est important de mettre cette instruction à la fin sinon on peut clear l'objectif et demander l'affichage ensuite
-			//Ce qui provoque une exception
-			if(i == 5)
-				updateGoal (5,Time.deltaTime);
-
 		}
 
 		
@@ -96,6 +92,7 @@ public class ObjectifManager : MonoBehaviour {
 		{
 			ObjectifName.GetComponent<Text> ().text = "";
 			Progression.GetComponent<Text>().text = "";
+			idObjectif = 0;
 			GameManager.victory();
 			return;
 		}
@@ -112,31 +109,50 @@ public class ObjectifManager : MonoBehaviour {
 			if(tmp >= 0)
 				currentObjective.tableDesObjectifs[label] = tmp;
 			
-			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
-				initialObjective.clear();
-				currentObjective.clear();
-				++idObjectif;
-				load (xmlPath, idObjectif);
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost)
+			{
+				loadNextObjectif();
 			}
 		}
 	}
 
-	// Objectifs qui se décrémentent par entier (tuer bactérie, etc...)
-	public void updateGoal(bool isCutsceneFinished){
+	// Objectifs cutscenes, les cutscenes appellent cette fonction lorsqu'elles sont terminées
+	public void updateCutsceneGoal(){
 		if (currentObjective.tableDesObjectifs.ContainsKey (8)) {
-			int tmp = (int) currentObjective.tableDesObjectifs[8];
+			int tmp = (int)currentObjective.tableDesObjectifs [8];
 			++tmp;
-			if(tmp >= 0)
-				currentObjective.tableDesObjectifs[8] = tmp;
+			if (tmp >= 0)
+				currentObjective.tableDesObjectifs [8] = tmp;
 
 			
-			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
-				initialObjective.clear();
-				currentObjective.clear();
-				++idObjectif;
-				load (xmlPath, idObjectif);
+			if (isCurrentObjectiveComplete () && !GameManager.gameLost) {
+				loadNextObjectif ();
 			}
 		}
+	}
+
+	// Objectifs de blend
+	public void endBlendObjectif()
+	{
+		if (currentObjective.tableDesObjectifs.ContainsKey (10)) 
+		{
+			loadNextObjectif();
+		}
+	}
+
+	// Objectifs de learning
+	public void endLearningObjectif()
+	{
+		if (currentObjective.tableDesObjectifs.ContainsKey (11)) 
+		{
+			loadNextObjectif();
+		}
+	}
+
+	public IEnumerator waitObjectif (float time)
+	{
+		yield return new WaitForSeconds (time);
+		loadNextObjectif ();
 	}
 
 
@@ -148,12 +164,29 @@ public class ObjectifManager : MonoBehaviour {
 			currentObjective.tableDesObjectifs[label] = tmp;
 
 			
-			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
-				currentObjective.clear();
-				++idObjectif;
-				load (xmlPath, idObjectif);
+			if(isCurrentObjectiveComplete() && !GameManager.gameLost)
+			{
+				loadNextObjectif();
 			}
 		}
+	}
+
+	IEnumerator TimeObjectif()
+	{
+		float time = (float) currentObjective.tableDesObjectifs[5];
+		while (!isCurrentObjectiveComplete()) 
+		{
+			yield return new WaitForSeconds(1.0f);
+			time -= 1.0f;
+			currentObjective.tableDesObjectifs[5] = time;
+			Progression.GetComponent<Text>().text = RoundValue((float)currentObjective.tableDesObjectifs[5],1).ToString();
+		}
+
+		if (!GameManager.gameLost) 
+		{
+			loadNextObjectif();
+		}
+
 	}
 
 	// Objectifs qui se décrémentent par position (vecteurs etc...)
@@ -165,18 +198,24 @@ public class ObjectifManager : MonoBehaviour {
 			}
 
 			if(isCurrentObjectiveComplete() && !GameManager.gameLost){
-				currentObjective.clear();
-				++idObjectif;
-				load (xmlPath, idObjectif);
+				loadNextObjectif();
 			}
 		}
+	}
+
+	void loadNextObjectif()
+	{
+		initialObjective.clear();
+		currentObjective.clear();
+		++idObjectif;
+		load (xmlPath, idObjectif);
 	}
 
 	bool isCurrentObjectiveComplete()
 	{
 		foreach (int i in currentObjective.tableDesObjectifs.Keys) 
 		{
-			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 7 || i == 8 || i==9) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
+			if((i == 0 || i == 1 || i == 3 || i == 4 || i == 6 || i == 7 || i == 8 || i==9 || i == 13) && (int)currentObjective.tableDesObjectifs[i] < (int)initialObjective.tableDesObjectifs[i])
 				return false;
 			else if(i == 5 && (float)currentObjective.tableDesObjectifs[i] > 0.0f)
 				return false;
@@ -201,6 +240,12 @@ public class ObjectifManager : MonoBehaviour {
 
 		XmlTextReader myXmlTextReader = new XmlTextReader (path);
 		while(myXmlTextReader.Read()){
+			if(myXmlTextReader.IsStartElement() && myXmlTextReader.Name == "objectifs")
+			{
+				Debug.Log(nbObjectifs);
+				nbObjectifs = int.Parse(myXmlTextReader.GetAttribute("number"));
+				Debug.Log(nbObjectifs);
+			}
 			if(myXmlTextReader.IsStartElement() && myXmlTextReader.Name == "objectif"){
 				if (int.Parse(myXmlTextReader.GetAttribute("id")) == id){
 
@@ -209,15 +254,81 @@ public class ObjectifManager : MonoBehaviour {
 					initialObjective.description = myXmlTextReader.GetAttribute("description");
 					currentObjective.description = myXmlTextReader.GetAttribute("description");
 
-					learning = myXmlTextReader.GetAttribute("learning");
 
-					blend = bool.Parse(myXmlTextReader.GetAttribute("blend"));
-					cutscene = bool.Parse(myXmlTextReader.GetAttribute("cutscene"));
-
-					Debug.Log(cutscene);
 
 					tag = int.Parse(myXmlTextReader.GetAttribute("tag"));
-					if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6 || tag == 7 || tag==8 || tag == 9)
+
+					//Si le tag est 10, il s'agit d'un blend de caméra
+					if(tag == 14)
+					{
+						StartCoroutine(waitObjectif(float.Parse(myXmlTextReader.GetAttribute("time"))));
+						currentObjective.tableDesObjectifs.Add(tag, -1);
+						return;
+					}
+					else if(tag == 10)
+					{
+						Debug.Log("Blend");
+						currentObjective.tableDesObjectifs.Add(tag, -1);
+
+						float x = float.Parse(myXmlTextReader.GetAttribute("x"));
+						float y = float.Parse(myXmlTextReader.GetAttribute("y"));
+						float z = float.Parse(myXmlTextReader.GetAttribute("z"));
+
+						float duration = float.Parse(myXmlTextReader.GetAttribute("duration"));
+						float size = float.Parse(myXmlTextReader.GetAttribute("size"));
+
+						bool enableControlAfter =  bool.Parse(myXmlTextReader.GetAttribute("enableControlAfter"));
+
+						StartCoroutine(CameraControl.BlendCameraTo(new Vector3(x,y,z),size,duration,enableControlAfter));
+
+					}
+					else if(tag == 11) // Si c'est 11, il s'agit d'un affichage de panneau
+					{
+						currentObjective.tableDesObjectifs.Add(tag, -1);
+
+						string learning = myXmlTextReader.GetAttribute("learning");
+						GameObject panelLearning = GameObject.Find(learning);
+						if (panelLearning != null) 
+						{
+							if(panelLearning.GetComponent<PanelController>()!= null)
+								panelLearning.GetComponent<PanelController> ().isPanelActive = true;
+						}
+						else
+						{
+							Debug.Log("Panneau Learning " + learning +" non trouvé, penser à activer l'objet !");
+							loadNextObjectif();
+							return;
+						}
+					}
+					else if(tag == 8)
+					{
+						initialObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
+						currentObjective.tableDesObjectifs.Add(tag, 0);
+
+						string cutsceneName = myXmlTextReader.GetAttribute("cutsceneName");
+						GameObject cutscene = GameObject.Find(cutsceneName);
+						if(cutscene != null)
+						{
+							Cutscene scriptCutscene = cutscene.GetComponent<Cutscene>();
+							if(scriptCutscene != null)
+								cutscene.GetComponent<Cutscene>().enabled = true;
+							else
+							{
+								Debug.Log("Aucun script cutscene n'est attaché à l'objet");
+								loadNextObjectif();
+								return;
+							}
+						}
+						else
+						{
+							Debug.Log("Cutscene " + cutsceneName +" non trouvé, penser à activer l'objet !");
+							loadNextObjectif();
+							return;
+						}
+
+
+					}
+					else if(tag == 0 || tag == 1 || tag == 3 || tag == 4 || tag == 6 || tag == 7 || tag == 9 || tag == 12 || tag == 13)
 					{ // Si on a ces tags, on a forcément un int dans value
 						initialObjective.tableDesObjectifs.Add(tag, (int)int.Parse(myXmlTextReader.GetAttribute("value")));
 						currentObjective.tableDesObjectifs.Add(tag, 0);
@@ -236,10 +347,9 @@ public class ObjectifManager : MonoBehaviour {
 					{ // Pour le tag 5 on a un float dans value
 						initialObjective.tableDesObjectifs.Add(tag, (float)float.Parse(myXmlTextReader.GetAttribute("value")));
 						currentObjective.tableDesObjectifs.Add(tag, (float)float.Parse(myXmlTextReader.GetAttribute("value")));
+						StartCoroutine(TimeObjectif());
 						break;
 					}
-
-
 				}
 			}
 		}

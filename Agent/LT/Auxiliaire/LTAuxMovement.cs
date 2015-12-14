@@ -85,8 +85,8 @@ public class LTAuxMovement : AgentMovement {
 					GameManager.gameManager.GetComponent<LevelAgentManager>().LTCytoSpawn.enabled = true;
 					GameManager.gameManager.GetComponent<LevelAgentManager>().takeResidu = false;
 				}
-				else
-					GameManager.gameManager.GetComponent<LevelBacteriaManager>().spawnCyto.enabled = true;
+				//else
+					//GameManager.gameManager.GetComponent<LevelBacteriaManager>().spawnCyto.enabled = true;
 
 				GameManager.canTakeResidu = false;
 
@@ -102,8 +102,8 @@ public class LTAuxMovement : AgentMovement {
 					GameManager.gameManager.GetComponent<LevelAgentManager>().LBSpawn.enabled = true;
 					GameManager.gameManager.GetComponent<LevelAgentManager>().takeResidu = false;
 				}
-				else
-					GameManager.gameManager.GetComponent<LevelVirusManager>().spawnLB.enabled = true;
+				//else
+					//GameManager.gameManager.GetComponent<LevelVirusManager>().spawnLB.enabled = true;
 
 				//unitGenerator.Generate(Type.TypeUnit.LB);
 			}
@@ -124,16 +124,19 @@ public class LTAuxMovement : AgentMovement {
 
 		GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (9);
 		
-		residus = true;
+
 		typeResidus = _typeResidus;
-		Debug.Log("type : "+typeResidus);
+		//Debug.Log("type : "+typeResidus);
 		if(typeResidus == Type.TypeResidus.BACTERIA){
 			residuBacteriaSprite.SetActive(true);
 		}else if(typeResidus == Type.TypeResidus.VIRUS){
 			residuVirusSprite.SetActive(true);
 		}
 
-		agent.state = LTAuxAgent.BACK_TO_BASE;
+		if (GameManager.gameManager.GetComponent<GameManager> ().simulation) {
+			residus = true;
+			agent.state = LTAuxAgent.BACK_TO_BASE;
+		}
 
 
 		return true;

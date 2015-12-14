@@ -1,36 +1,45 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuController : MonoBehaviour{
+public class MenuController : MonoBehaviour {
 
-	public GameObject playMenu, controlMenu, receptionMenu;
+	public GameObject credits;
 
-	public void quit(){
-		if (Application.isEditor)
-			Debug.Break ();
-		else
-			Application.Quit ();
+	public GameObject menu;
+	public GameObject levels;
+	public GameObject characters;
+
+	public void Play(){
+		Debug.Log("PLAY");
+		iTween.MoveTo(menu, iTween.Hash("x", -800, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
+		iTween.MoveTo(levels, iTween.Hash("x", 0, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
 	}
 
-	public void loadPlayLevel(string sceneName){
-		Application.LoadLevel (sceneName);
+	public void Characters(){
+		iTween.MoveTo(menu, iTween.Hash("x", 800, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
+		iTween.MoveTo(characters, iTween.Hash("x", 0, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
 	}
 
-	public void toReception(){
-		receptionMenu.SetActive (true);
-		playMenu.SetActive (false);
-		controlMenu.SetActive (false);
+	public void Quit(){
+		if(Application.isEditor){
+			Debug.Break();
+		}else{
+			Application.Quit();
+		}
 	}
 
-	public void toControls(){
-		receptionMenu.SetActive (false);
-		playMenu.SetActive (false);
-		controlMenu.SetActive (true);
+	public void SwitchCredits(){
+		credits.SetActive(!credits.activeSelf);
 	}
 
-	public void toPlay(){
-		playMenu.SetActive (true);
-		receptionMenu.SetActive (false);
-		controlMenu.SetActive (false);
+	public void BackToMenu(){
+		iTween.MoveTo(menu, iTween.Hash("x", 0, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
+
+		iTween.MoveTo(levels, iTween.Hash("x", 800, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
+		iTween.MoveTo(characters, iTween.Hash("x", -800, "time", 1f, "easetype", iTween.EaseType.easeOutBack, "islocal", true));
+	}
+
+	public void LoadLevel(int i){
+		Application.LoadLevel("Level"+i);
 	}
 }

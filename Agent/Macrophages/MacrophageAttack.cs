@@ -23,7 +23,7 @@ public class MacrophageAttack : AgentAttack {
 			return enemyLife;
 		}
 
-		if(enemyLife.currentLife <= 0 && !bringResidues && !residuesDone && GameManager.canTakeResidu && Random.Range(0f,1f) > 0.75f){
+		if(enemyLife.currentLife <= 0 && !bringResidues /*&& !residuesDone*/ && GameManager.canTakeResidu && Random.Range(0f,1f) > 0.5f){
 
 
 			if(enemyLife.name.Contains("Bacteria")){
@@ -35,7 +35,9 @@ public class MacrophageAttack : AgentAttack {
 				residuVirusSprite.SetActive(true);
 			}
 
-			bringResidues = true;
+			if (GameManager.gameManager.GetComponent<GameManager> ().simulation) 
+				bringResidues = true;
+
 			agent.state = MacrophageAgent.BRING_RESIDUS;
 		}
 

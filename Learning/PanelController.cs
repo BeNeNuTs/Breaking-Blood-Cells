@@ -39,7 +39,11 @@ public class PanelController : MonoBehaviour
 	void popPanel()
 	{
 		iTween.ScaleTo (gameObject, iTween.Hash ("scale", Vector3.one, "time", 0.5f, "easetype", iTween.EaseType.easeOutBack, "ignoretimescale",true));
+	}
 
+	void unpopPanel()
+	{
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", Vector3.zero, "time", 0.5f, "easetype", iTween.EaseType.easeInBack, "ignoretimescale",true));		
 	}
 
 	// Update is called once per frame
@@ -50,9 +54,6 @@ public class PanelController : MonoBehaviour
 
 		if (isPanelActive) 
 		{
-
-
-
 			if(!hasPoped)
 			{
 
@@ -62,21 +63,25 @@ public class PanelController : MonoBehaviour
 				popPanel();
 				hasPoped = true;
 			}
-			GameManager.Pause();
+			GameManager.PanelPause();
 			if(Input.GetButtonDown("Submit"))
 			{
 				idText++;
 				if(idText == panelTexts.Count)
 				{
-					isPanelActive = false;
+					unpopPanel();
+
+					/*isPanelActive = false;
 					GetComponent<Image>().enabled = false;
 					foreach (Text text in panelTexts) 
 						text.enabled = false;
+					*/
 
 					continueText.enabled = false;
 					continueText.gameObject.transform.parent = transform.parent;
-					GameManager.Unpause();
+					GameManager.PanelUnpause();
 					alreadyPlayed = true;
+					GameManager.gameManager.GetComponent<ObjectifManager>().endLearningObjectif();
 					return;
 				}
 			}

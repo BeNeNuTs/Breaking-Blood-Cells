@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DialogBubleController : MonoBehaviour {
+public class DialogBubleController : Cutscene {
 
 	int idText = 0;
 	public bool isPanelActive = false;
@@ -37,7 +37,7 @@ public class DialogBubleController : MonoBehaviour {
 		yield return new WaitForSeconds (delayBeforeBeginning);
 		StartCoroutine (playBubble (delayBetweenTexts));
 		yield return new WaitForSeconds (delayBeforeNextObjective);
-		GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(true);
+		GameManager.gameManager.GetComponent<ObjectifManager>().updateCutsceneGoal();
 	}
 
 	IEnumerator playBubble(float delayBetweenTexts)

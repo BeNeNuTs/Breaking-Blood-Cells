@@ -1,17 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe AntibodyMovement hérite de la classe AgentMovement
+/// et permet de déplacer les anticorps.
+/// </summary>
 public class AntibodyMovement : AgentMovement {
 
 	[HideInInspector] public bool hasTarget = false;
 
+	/// <summary>
+	/// Vérifie ce qui entre dans le percepts de l'agent.
+	/// </summary>
 	protected override void OnTriggerEnter2D(Collider2D other){
 		if(other.name.Contains("Virus")){
 			base.OnTriggerEnter2D(other);
 		}
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Permet de faire avancer l'agent.
+	/// </summary>
 	protected override void Wiggle ()
 	{
 		if(targets.Count > 0){
@@ -39,6 +48,9 @@ public class AntibodyMovement : AgentMovement {
 		GoForward();
 	}
 
+	/// <summary>
+	/// Avancer.
+	/// </summary>
 	void GoForward(){
 		hasTarget = false;
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;

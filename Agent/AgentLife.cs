@@ -2,6 +2,9 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// La classe AgentLife permet de gérer la vie de l'agent.
+/// </summary>
 public class AgentLife : MonoBehaviour {
 
 	public float startingLife;
@@ -35,17 +38,10 @@ public class AgentLife : MonoBehaviour {
 		isDead = false;
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Met à jour la position du canvas affichant la vie de l'agent.
+	/// </summary>
 	protected virtual void Update () {
-
-		// Pour pouvoir tester si les méthodes fonctionnent
-		/*if(Input.GetKeyDown(KeyCode.A)){
-			if(agent.state == MacrophageAgent.BRING_RESIDUS && name.Contains("Macrophage")){
-				TakeDamage(10);
-			}
-		}else if(Input.GetKeyDown(KeyCode.L)){
-			AddLife(10);
-		}*/
 
 		UpdatePositionCanvas();
 	}
@@ -64,7 +60,11 @@ public class AgentLife : MonoBehaviour {
 		UpdateLifeImage();
 	}
 
-	/** Inflige des dégats à l'agent */
+	/// <summary>
+	/// Inflige des dégats à l'agent.
+	/// </summary>
+	/// <param name="amount">Quantité de dégats reçus.</param>
+	/// <param name="virus">Si <c>true</c> alors c'est un virus qui inflige des dégats.</param>
 	public virtual void TakeDamage (int amount, bool virus = false)
 	{
 		if(isDead)
@@ -85,7 +85,9 @@ public class AgentLife : MonoBehaviour {
 		UpdateLifeImage();
 	}
 
-	/** Met à jour la barre de vie de l'agent */
+	/// <summary>
+	/// Met à jour la barre de vie de l'agent.
+	/// </summary>
 	public void UpdateLifeImage(){
 		if(cellLife.enabled == false){
 			cellLife.enabled = true;
@@ -96,10 +98,16 @@ public class AgentLife : MonoBehaviour {
 		cellLife.color = Color.Lerp(Color.red, Color.green, percentageLife);
 	}
 
+	/// <summary>
+	/// Met à jour la position du canvas.
+	/// </summary>
 	void UpdatePositionCanvas(){
 		canvas.transform.position = posCanvas;
 	}
 
+	/// <summary>
+	/// Permet de faire mourir l'agent lorsqu'il n'a plus de vie.
+	/// </summary>
 	protected virtual void Death ()
 	{
 		UnitManager.DeathCell(name);
@@ -113,19 +121,29 @@ public class AgentLife : MonoBehaviour {
 		Destroy(gameObject);
 	}
 
+	/// <summary>
+	/// Permet de détruire l'agent.
+	/// </summary>
 	public void Kill ()
 	{
 		Death();
 
 	}
 
+	/// <summary>
+	/// Retourne la position du canvas.
+	/// </summary>
+	/// <value>La position du canvas.</value>
 	Vector3 posCanvas { 
 		get{
 			return new Vector3(transform.position.x, transform.position.y + offsetY, transform.position.z);
 		}
 	}
 
-	/** Fonction à faire pour afficher un effet, un son lorsque l'agent subit des dégats */
+	/// <summary>
+	/// Affiche un effet lorsque l'agent subit des dégats.
+	/// </summary>
+	/// <param name="newColor">La couleur de l'effet.</param>
 	public IEnumerator IsHit(Color newColor) {
 
 		SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();

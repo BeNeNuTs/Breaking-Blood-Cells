@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe LTAuxMovement hérite de la classe AgentMovement
+/// et permet de redéfinir les méthodes de mouvements des lymphocytes T Auxiliaire.
+/// </summary>
 public class LTAuxMovement : AgentMovement {
 
 	public static bool backToBase = false;
@@ -23,6 +27,11 @@ public class LTAuxMovement : AgentMovement {
 		unitGenerator = GameObject.FindGameObjectWithTag("Base").GetComponent<UnitGenerator>();
 	}
 
+	/// <summary>
+	/// Permet de ce diriger vers un macrophage lorsque celui-ci est détecté
+	/// dans le percept du lymphocyte T Auxiliaire et qu'il apporte un résidu.
+	/// </summary>
+	/// <param name="other">Other.</param>
 	protected void OnTriggerStay2D(Collider2D other){
 		if(other.CompareTag("Cell") && other.GetType() == typeof(BoxCollider2D)){
 			if(other.name.Contains("Macrophage") && MacrophageAttack.bringResidues){
@@ -36,7 +45,10 @@ public class LTAuxMovement : AgentMovement {
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Vérifie l'état de l'agent.
+	/// </summary>
 	protected override void Update () {
 		if((agent.state == LTAuxAgent.BACK_TO_BASE || backToBase) && agent.state != LTAuxAgent.ANALYZE){
 			BackToBase();
@@ -47,12 +59,18 @@ public class LTAuxMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Permet de faire avancer l'agent.
+	/// </summary>
 	protected override void Wiggle(){
 		// Faire avancer l'agent
 		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
+	/// <summary>
+	/// Permet à l'agent de retourner à la base pour analise.
+	/// </summary>
 	void BackToBase(){
 		if(Vector3.Distance(unitGenerator.transform.position, transform.position) < stoppingDistance){
 			//ANALYZE RESIDUS
@@ -65,12 +83,12 @@ public class LTAuxMovement : AgentMovement {
 		transform.rotation = Quaternion.Euler(0f, 0f, rot_z);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime * 2;
 	}
-	
+
+	/// <summary>
+	/// Permet à l'agent d'analiser un résidu.
+	/// </summary>
 	void Analize(){
 		agentRigidbody.velocity = Vector2.zero;
-		
-		//AJOUT D'ANIM D'ANALISE
-
 
 		time += Time.deltaTime;
 		
@@ -116,7 +134,12 @@ public class LTAuxMovement : AgentMovement {
 
 		}
 	}
-	
+
+	/// <summary>
+	/// Permet à l'agent de récupérer un résidu donné par un macrophage.
+	/// </summary>
+	/// <returns><c>true</c>, si le résidu à été récupéré, <c>false</c> sinon.</returns>
+	/// <param name="_typeResidus">_type residus.</param>
 	public bool TakeResidus(Type.TypeResidus _typeResidus){
 		if(residus || _typeResidus == Type.TypeResidus.NONE){
 			return false;
@@ -126,7 +149,6 @@ public class LTAuxMovement : AgentMovement {
 		
 
 		typeResidus = _typeResidus;
-		//Debug.Log("type : "+typeResidus);
 		if(typeResidus == Type.TypeResidus.BACTERIA){
 			residuBacteriaSprite.SetActive(true);
 		}else if(typeResidus == Type.TypeResidus.VIRUS){
@@ -137,7 +159,6 @@ public class LTAuxMovement : AgentMovement {
 			residus = true;
 			agent.state = LTAuxAgent.BACK_TO_BASE;
 		}
-
 
 		return true;
 	}

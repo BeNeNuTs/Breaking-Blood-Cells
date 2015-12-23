@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe MacrophageAttack hérite de la classe AgentAttack
+/// et permet de redéfinir les méthodes d'attaque des macrophages.
+/// </summary>
 public class MacrophageAttack : AgentAttack {
 
 	public static bool bringResidues = false;
@@ -16,6 +20,9 @@ public class MacrophageAttack : AgentAttack {
 		typeResidus = Type.TypeResidus.NONE;
 	}
 
+	/// <summary>
+	/// Méthode d'attaque de l'agent.
+	/// </summary>
 	protected override AgentLife Attack(){
 		AgentLife enemyLife = base.Attack();
 
@@ -44,8 +51,10 @@ public class MacrophageAttack : AgentAttack {
 		return enemyLife;
 	}
 
+	/// <summary>
+	/// Permet de supprimer les résidus du macrophage.
+	/// </summary>
 	public void RemoveResidus(){
-		Debug.Log("RemoveResiduBacteria");
 		residuBacteriaSprite.SetActive(false);
 		residuVirusSprite.SetActive(false);
 		typeResidus = Type.TypeResidus.NONE;

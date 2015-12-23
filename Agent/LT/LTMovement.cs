@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe LTMovement hérite de la classe AgentMovement
+/// et permet de redéfinir les méthodes de mouvements des lymphocytes T.
+/// </summary>
 public class LTMovement : AgentMovement {
 	
 	public Type.TypeLT typeLT;
@@ -20,6 +24,9 @@ public class LTMovement : AgentMovement {
 		time = 0f;
 	}
 
+	/// <summary>
+	/// Vérifie l'état de l'agent.
+	/// </summary>
 	protected override void Update () {
 		if(agent.state == Agent.WIGGLE){
 			Wiggle();
@@ -30,6 +37,9 @@ public class LTMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Permet de faire avancer l'agent.
+	/// </summary>
 	protected override void Wiggle(){
 		if(targets.Count > 0 && residus && typeResidus == Type.TypeResidus.BACTERIA){
 			agent.state = Agent.GOTOENEMY;
@@ -44,6 +54,9 @@ public class LTMovement : AgentMovement {
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
+	/// <summary>
+	/// Analize this instance.
+	/// </summary>
 	void Analize(){
 		agentRigidbody.velocity = Vector2.zero;
 

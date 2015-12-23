@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// La classe AgentSpawn permet de faire apparaitre des agents.
+/// </summary>
 public class AgentSpawn : MonoBehaviour {
 
 	public enum TypeSpawn
@@ -24,15 +27,12 @@ public class AgentSpawn : MonoBehaviour {
 
 	void Start()
 	{
-		//Insolite n'est-il pas ?
 		gameManager = GameManager.gameManager.GetComponent<GameManager> ();
 	}
 
-
-	// Update is called once per frame
+	
 	void Update () 
 	{
-
 		Vector3 positionSpawn = agentSpawnPosition [Random.Range (0, agentSpawnPosition.Count - 1)].position;
 
 		spawnTimer += Time.deltaTime;

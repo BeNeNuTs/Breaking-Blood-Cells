@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// La classe BacteriaMovement hérite de la classe AgentMovement
+/// et permet de déplacer une bactérie.
+/// </summary>
 public class BacteriaMovement : AgentMovement {
 
 	[HideInInspector]
@@ -9,6 +13,10 @@ public class BacteriaMovement : AgentMovement {
 
 	const uint NB_BACTERIAS_TO_ATTACK = 3;
 
+	/// <summary>
+	/// Vérifie ce qui entre dans le percepts de l'agent.
+	/// </summary>
+	/// <param name="other">Other.</param>
 	protected override void OnTriggerEnter2D(Collider2D other){
 		base.OnTriggerEnter2D(other);
 
@@ -24,7 +32,11 @@ public class BacteriaMovement : AgentMovement {
 			}
 		}
 	}
-	
+
+	/// <summary>
+	/// Vérifie ce qui sort dans le percepts de l'agent.
+	/// </summary>
+	/// <param name="other">Other.</param>
 	protected override void OnTriggerExit2D(Collider2D other){
 		base.OnTriggerExit2D(other);
 
@@ -35,6 +47,9 @@ public class BacteriaMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Vérifie l'état de l'agent.
+	/// </summary>
 	protected override void Update () {
 		if(agent.state == BacteriaAgent.FLEE){
 			Flee ();
@@ -43,6 +58,10 @@ public class BacteriaMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Déplacer l'agent vers l'ennemi le plus proche
+	/// si les bactéries sont en surnombre.
+	/// </summary>
 	protected override void GoToEnemy(){
 		UpdateList(bacterias);
 		UpdateList(targets);
@@ -72,6 +91,10 @@ public class BacteriaMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Permet à la bactérie de fuir face à l'ennemi si
+	/// elles sont en sousnombre.
+	/// </summary>
 	void Flee(){
 		UpdateList(targets);
 

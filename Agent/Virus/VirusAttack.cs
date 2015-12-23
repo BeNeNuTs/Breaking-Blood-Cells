@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe VirusAttack hérite de la classe AgentAttack
+/// et permet de redéfinir les méthodes d'attaque des virus.
+/// </summary>
 public class VirusAttack : AgentAttack {
 
+	/// <summary>
+	/// Méthode d'attaque de l'agent.
+	/// </summary>
 	protected override AgentLife Attack ()
 	{
 		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0 || myLife.currentLife == 0)
@@ -34,7 +41,6 @@ public class VirusAttack : AgentAttack {
 				enemyLife.isInfected = true;
 				GetComponent<VirusMovement>().target = enemyLife.gameObject;
 
-
 				AgentMovement enemyMovement = enemyLife.gameObject.GetComponent<AgentMovement>();
 				if(enemyMovement != null){
 					enemyMovement.agentRigidbody.velocity = Vector2.zero;
@@ -56,7 +62,6 @@ public class VirusAttack : AgentAttack {
 					circleCollider.enabled = false;
 				}
 
-
 				GetComponent<CircleCollider2D>().enabled = false;
 				myLife.canvas.GetComponent<Canvas>().enabled = false;
 
@@ -70,6 +75,11 @@ public class VirusAttack : AgentAttack {
 		return enemyLife;
 	}
 
+	/// <summary>
+	/// Met en noir l'agent qui est controlé.
+	/// </summary>
+	/// <returns>The black.</returns>
+	/// <param name="sprite">Sprite.</param>
 	IEnumerator FadeBlack(SpriteRenderer sprite){
 		Color oldColor = sprite.color;
 		

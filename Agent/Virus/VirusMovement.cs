@@ -11,6 +11,8 @@ public class VirusMovement : AgentMovement {
 
 	AgentLife cellLife;
 
+	public int nbVirusGenerated = 3;
+
 	void OnEnable(){
 		UpdateList(targets);
 		for(int i = 0 ; i < targets.Count ; i++){
@@ -35,6 +37,8 @@ public class VirusMovement : AgentMovement {
 		if(target != null){
 			if(Vector3.Distance(target.transform.position, transform.position) < 1f){
 				cellLife = target.GetComponent<AgentLife>();
+
+
 				if(cellLife != null){
 					cellLife.currentLife = cellLife.startingLife;
 					cellLife.cellLife.color = Color.blue;
@@ -42,6 +46,10 @@ public class VirusMovement : AgentMovement {
 
 				UpdateLifeCell();
 
+				if(target.name.Contains("Cell"))
+				{
+					GameManager.gameManager.GetComponent<ObjectifManager>().updateGoal(7);
+				}
 				agent.state = VirusAgent.DUPLICATE;
 				return;
 			}
@@ -75,6 +83,8 @@ public class VirusMovement : AgentMovement {
 			agent.state = Agent.WIGGLE;
 			return;
 		}
+
+
 		agentRigidbody.velocity = Vector2.zero;
 
 		timeToDuplicate += Time.deltaTime;
@@ -91,7 +101,7 @@ public class VirusMovement : AgentMovement {
 			virus.GetComponent<Agent>().state = Agent.WIGGLE;
 			UnitManager.NB_VIRUS++;
 
-			TakeDamageToCellControled(cellLife.startingLife * 0.1f);
+			TakeDamageToCellControled(cellLife.startingLife/nbVirusGenerated);
 		}
 	}
 

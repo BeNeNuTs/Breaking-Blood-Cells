@@ -12,7 +12,7 @@ public class Victory : Cutscene {
 	public IEnumerator destroyAllEnemies()
 	{
 
-		foreach(GameObject cell in GameObject.FindGameObjectsWithTag("Cell"))
+		/*foreach(GameObject cell in GameObject.FindGameObjectsWithTag("Cell"))
 		{
 			AgentMovement movement = cell.GetComponent<AgentMovement>();
 			if(movement != null)
@@ -42,24 +42,23 @@ public class Victory : Cutscene {
 				attack.enabled = false;
 			}
 
-		}
+		}*/
 
 
 		foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
 		{
-			AgentLife life = enemy.GetComponent<AgentLife>();
-			if(life != null)
+			if(enemy != null)
 			{
-				life.Kill();
+				AgentLife life = enemy.GetComponent<AgentLife>();
+				if(life != null)
+				{
+					life.Kill();
+				}
+				yield return new WaitForSeconds(0.05f);
 			}
-			yield return new WaitForSeconds(0.05f);
 		}
 
 		GameManager.gameManager.GetComponent<ObjectifManager>().updateCutsceneGoal();
 	}
-
-	// Update is called once per frame
-	void Update () {
 	
-	}
 }

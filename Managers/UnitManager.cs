@@ -67,6 +67,7 @@ public class UnitManager : MonoBehaviour {
 			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (0);
 		} else if (type.Contains ("Virus")) {
 			NB_VIRUS--;
+			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (1);
 		} /*else if (type.Contains ("Base")) 
 		{
 			GameManager.gameManager.GetComponent<ObjectifManager> ().updateGoal (13);

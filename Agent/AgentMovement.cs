@@ -12,7 +12,7 @@ public class AgentMovement : MonoBehaviour {
 	protected Agent agent;
 	protected float rotation;
 
-	[HideInInspector]
+	//[HideInInspector]
 	public List<GameObject> targets;
 	[HideInInspector]
 	public Rigidbody2D agentRigidbody;

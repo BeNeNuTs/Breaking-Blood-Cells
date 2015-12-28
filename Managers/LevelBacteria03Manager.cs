@@ -28,10 +28,15 @@ public class LevelBacteria03Manager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+
+		GameManager.gameManager.GetComponent<GameManager> ().initLevel ();
+
+		Time.timeScale = 1f;
+
 		UnitManager.CountCells ();
 		//Debug.Log (ObjectifManager.nbObjectifs);
 		//Pour chaque objectif
-		for (int i = 0; i < ObjectifManager.nbObjectifs; i++) 
+		for (int i = 0; i < 100; i++) 
 		{
 			//Debug.Log(i);
 			ObjectifDone.Add(false);

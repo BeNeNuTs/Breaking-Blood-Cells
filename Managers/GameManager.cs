@@ -39,6 +39,8 @@ public class GameManager : MonoBehaviour
 	public bool simulation = false;
 
 
+
+
 	void Awake()
 	{
 		gameManager = gameObject;
@@ -48,17 +50,24 @@ public class GameManager : MonoBehaviour
 	void Start()
 	{
 
-		MacrophageAttack.bringResidues = false;
-		MacrophageAttack.residuesDone = false;
-		LTAuxMovement.residus = false;
-		LTAuxMovement.typeResidus = Type.TypeResidus.NONE;
+		initLevel ();
 		gameOverScreen = GameObject.FindGameObjectWithTag ("GameOverScreen");
 		gameOverScreen.SetActive (false);
 		pauseMenu = GameObject.FindGameObjectWithTag ("PauseScreen");
 		pauseMenu.SetActive (false);
-		/*victoryScreen = GameObject.FindGameObjectWithTag ("VictoryScreen");
-		victoryScreen.SetActive (false);*/
 	}
+
+	public void initLevel()
+	{
+		MacrophageAttack.bringResidues = false;
+		MacrophageAttack.residuesDone = false;
+		LTAuxMovement.residus = false;
+		LTAuxMovement.typeResidus = Type.TypeResidus.NONE;
+		canTakeResidu = false;
+		gameLost = false;
+		CellControlled = null;
+	}
+
 
 	void Update()
 	{

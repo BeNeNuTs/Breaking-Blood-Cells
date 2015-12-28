@@ -24,9 +24,13 @@ public class LevelBacteria01Manager : MonoBehaviour {
 	void Start () 
 	{
 
+		GameManager.gameManager.GetComponent<GameManager> ().initLevel ();
+
+		Time.timeScale = 1f;
+
 		UnitManager.CountCells ();
 
-		for (int i = 0; i < ObjectifManager.nbObjectifs; i++) 
+		for (int i = 0; i < 100; i++) 
 		{
 			ObjectifDone.Add(false);
 		}

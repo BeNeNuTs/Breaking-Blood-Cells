@@ -2,65 +2,62 @@
 using System.Collections;
 
 public class LevelAgentManager : MonoBehaviour {
-
-
-	[Range (0,5)]
+	
+	
+	[Range (0,3)]
 	public float timeScale = 1.0f;
-
-
+	
+	
 	public AgentSpawn bacteriaSpawn;
 	public AgentSpawn MacrophageSpawn;
 	public AgentSpawn LTAuxSpawn;
 	public AgentSpawn LTCytoSpawn;
 	public AgentSpawn LBSpawn;
 	public AgentSpawn VirusSpawn;
-
+	
 	public bool bacteria;
 	public bool virus;
-
+	
 	public int maxMacrophage;
-	public int maxBacteria;
+	public int maxEnemy;
 	public int maxLT;
-	public int maxVirus;
 	public int maxLB;
-
-	[Range (0,60)]
+	
+	[Range (0,20)]
 	public float spawnRateMacrophage;
-	[Range (0,60)]
-	public float spawnRateBacteria;
-	[Range (0,60)]
+	[Range (0,20)]
+	public float spawnRateEnemy;
+	[Range (0,20)]
 	public float spawnRateLTAux;
-	[Range (0,60)]
+	[Range (0,20)]
 	public float spawnRateLTCyto;
-	[Range (0,60)]
-	public float spawnRateVirus;
-	[Range (0,60)]
+	[Range (0,20)]
 	public float spawnRateLB;
-
+	
 	public bool destroyBacteria;
 	public bool destroyMacrophage;
 	public bool destroyVirus;
 	public bool destroyLTCyto;
 	public bool destroyLTAux;
 	public bool destroyLB;
-
+	
 	public bool takeResidu = true;
-
+	
 	public bool showStats = false;
-
-
+	
+	
 	// Use this for initialization
 	void Start () 
 	{
 		CameraControl.zoomEnabled = true;
 		CameraControl.moveEnabled = true;
-
+		
 		if (bacteria && virus) 
 		{
 			Debug.Log("Impossible de sélectionner bactéries et virus en meme temps");
 			virus = false;
 		}
-
+		
 		if (bacteria) 
 		{
 			VirusSpawn.enabled = false;
@@ -77,33 +74,33 @@ public class LevelAgentManager : MonoBehaviour {
 	void Update () 
 	{
 		GameManager.canTakeResidu = takeResidu;
-
+		
 		Time.timeScale = timeScale;
-
-		bacteriaSpawn.spawnRate = spawnRateBacteria;
+		
+		bacteriaSpawn.spawnRate = spawnRateEnemy;
 		MacrophageSpawn.spawnRate = spawnRateMacrophage;
 		LTAuxSpawn.spawnRate = spawnRateLTAux;
 		LTCytoSpawn.spawnRate = spawnRateLTCyto;
 		LBSpawn.spawnRate = spawnRateLB;
-		VirusSpawn.spawnRate = spawnRateVirus;
-
+		VirusSpawn.spawnRate = spawnRateEnemy;
+		
 		if (LTAuxMovement.backToBase && virus)
 			maxLT = -1;
-
+		
 		UnitManager.MAX_MACROPHAGES = maxMacrophage;
-		UnitManager.MAX_BACTERIES = maxBacteria;
+		UnitManager.MAX_BACTERIES = maxEnemy;
 		UnitManager.MAX_LYMPHOCYTES_T = maxLT;
-		UnitManager.MAX_VIRUS = maxVirus;
+		UnitManager.MAX_VIRUS = maxEnemy;
 		UnitManager.MAX_LYMPHOCYTES_B = maxLB;
-
-
+		
+		
 		if (showStats) 
 		{
 			showStats = false;
 			UnitManager.ShowStats();
 		}
-
-
+		
+		
 		if (destroyBacteria) 
 		{
 			
@@ -120,7 +117,7 @@ public class LevelAgentManager : MonoBehaviour {
 			}
 			destroyBacteria = false;
 		}
-
+		
 		if (destroyVirus) 
 		{
 			
@@ -137,7 +134,7 @@ public class LevelAgentManager : MonoBehaviour {
 			}
 			destroyVirus = false;
 		}
-
+		
 		if (destroyMacrophage) 
 		{
 			
@@ -154,23 +151,23 @@ public class LevelAgentManager : MonoBehaviour {
 			}
 			destroyMacrophage = false;
 		}
-
+		
 		if (destroyLTAux) 
 		{
 			
 			foreach(GameObject cell in GameObject.FindGameObjectsWithTag("LTAux"))
 			{
-		
-					AgentLife life = cell.GetComponent<AgentLife>();
-					if(life != null)
-					{
-						life.Kill();
-					}
-
+				
+				AgentLife life = cell.GetComponent<AgentLife>();
+				if(life != null)
+				{
+					life.Kill();
+				}
+				
 			}
 			destroyLTAux = false;
 		}
-
+		
 		if (destroyLTCyto) 
 		{
 			
@@ -187,7 +184,7 @@ public class LevelAgentManager : MonoBehaviour {
 			}
 			destroyLTCyto = false;
 		}
-
+		
 		if (destroyLB) 
 		{
 			
@@ -204,7 +201,7 @@ public class LevelAgentManager : MonoBehaviour {
 			}
 			destroyLB = false;
 		}
-
-
+		
+		
 	}
 }

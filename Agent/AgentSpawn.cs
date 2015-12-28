@@ -62,7 +62,9 @@ public class AgentSpawn : MonoBehaviour {
 			case TypeSpawn.Virus:
 				if(UnitManager.NB_VIRUS < UnitManager.MAX_VIRUS)
 				{
-					Instantiate(gameManager.virus, positionSpawn,Quaternion.identity);
+					
+					Quaternion q = Quaternion.AngleAxis (180, Vector3.forward);
+					Instantiate(gameManager.virus, positionSpawn,q);
 					UnitManager.NB_VIRUS++;
 				}
 				break;

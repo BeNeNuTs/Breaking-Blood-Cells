@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe VirusMovement hérite de la classe AgentMovement
+/// et permet de redéfinir les méthodes de mouvements des virus.
+/// </summary>
 public class VirusMovement : AgentMovement {
 
 	[HideInInspector]
@@ -10,8 +14,13 @@ public class VirusMovement : AgentMovement {
 	float timeToDuplicate = 0f;
 
 	AgentLife cellLife;
-
+	
 	public int nbVirusGenerated = 3;
+
+
+	/// <summary>
+	/// Vérifie la liste des ennemis des virus à l'activation de ce script.
+	/// </summary>
 
 	void OnEnable(){
 		UpdateList(targets);
@@ -22,6 +31,9 @@ public class VirusMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Vérifie l'état de l'agent.
+	/// </summary>
 	protected override void Update ()
 	{
 		base.Update ();
@@ -33,6 +45,9 @@ public class VirusMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Permet à l'agent de controler un autre agent.
+	/// </summary>
 	void ToControl(){
 		if(target != null){
 			if(Vector3.Distance(target.transform.position, transform.position) < 1f){
@@ -69,11 +84,17 @@ public class VirusMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Met à jour la vie de la cellule.
+	/// </summary>
 	void UpdateLifeCell(){
 		float percentageLife = (float)cellLife.currentLife / (float)cellLife.startingLife;
 		cellLife.cellLife.fillAmount = percentageLife;
 	}
 
+	/// <summary>
+	/// Duplique le virus.
+	/// </summary>
 	void Duplicate(){
 		if(target == null){
 			GetComponent<AgentLife>().canvas.GetComponent<Canvas>().enabled = true;
@@ -105,6 +126,10 @@ public class VirusMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Inflige des dommages à la cellule controlée.
+	/// </summary>
+	/// <param name="amount">Quantité de dommages infligés.</param>
 	public void TakeDamageToCellControled(float amount){
 		if(cellLife == null){
 			GetComponent<AgentLife>().Kill();

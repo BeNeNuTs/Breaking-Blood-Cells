@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe AntibodyAttack hérite de la classe AgentAttack
+/// et redéfinie les méthodes d'attaque des anticorps.
+/// </summary>
 public class AntibodyAttack : AgentAttack {
 
 	public float timeBeforeDestroy = 5f;
@@ -21,6 +25,9 @@ public class AntibodyAttack : AgentAttack {
 		sprite = GetComponentInChildren<SpriteRenderer>();
 	}
 
+	/// <summary>
+	/// Met à jour la position et la couleur d'un anticorps.
+	/// </summary>
 	protected override void Update ()
 	{
 		base.Update ();
@@ -48,6 +55,9 @@ public class AntibodyAttack : AgentAttack {
 		}
 	}
 
+	/// <summary>
+	/// Méthode d'attaque de l'agent.
+	/// </summary>
 	protected override AgentLife Attack ()
 	{
 		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0)
@@ -87,6 +97,9 @@ public class AntibodyAttack : AgentAttack {
 		return enemyLife;
 	}
 
+	/// <summary>
+	/// Permet de geler un virus.
+	/// </summary>
 	void FreezeEnemy(){
 		AgentMovement enemyMovement = enemyLife.GetComponent<AgentMovement>();
 		enemyMovement.agentRigidbody.velocity = Vector2.zero;
@@ -94,6 +107,9 @@ public class AntibodyAttack : AgentAttack {
 		enemyLife.GetComponent<AgentAttack>().enabled = false;
 	}
 
+	/// <summary>
+	/// Permet de dégeler un virus.
+	/// </summary>
 	void UnfreezeEnemy(){
 		if(enemyLife == null){
 			Destroy(gameObject);
@@ -112,6 +128,9 @@ public class AntibodyAttack : AgentAttack {
 		Destroy(gameObject);
 	}
 
+	/// <summary>
+	/// Rend transparent un anticorps.
+	/// </summary>
 	void FadeSpriteRenderer(){
 		sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1 - (timeDestroy / timeBeforeDestroy));
 	}

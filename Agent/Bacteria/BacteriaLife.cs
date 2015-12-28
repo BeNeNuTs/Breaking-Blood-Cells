@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe BacteriaLife hérite de la classe AgentLife
+/// et permet de gérer la vie des bactéries.
+/// </summary>
 public class BacteriaLife : AgentLife {
 
 	public GameObject ondePrefab;
@@ -11,13 +15,13 @@ public class BacteriaLife : AgentLife {
 	float timeToWait;
 	float percentageGainLife = 0.1f;
 
-
-
 	void Start(){
 		timeToWait = Random.Range(timeMinToWait, timeMaxToWait);
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Vérifie si la bactérie peut se dupliquer.
+	/// </summary>
 	protected override void Update () {
 		base.Update();
 
@@ -33,7 +37,9 @@ public class BacteriaLife : AgentLife {
 	}
 	
 
-	/** Permet de dupliquer l'agent s'il possède toute sa vie et en divant sa vie par 2 */
+	/// <summary>
+	/// Permet de dupliquer la bactérie si elle possède toute sa vie en divisant sa vie par deux.
+	/// </summary>
 	void Duplicate(){
 		if(UnitManager.NB_BACTERIES < UnitManager.MAX_BACTERIES){
 			if(agent.state == Agent.WIGGLE || agent.state == BacteriaAgent.FLEE){

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe LTCytoAttack hérite de la classe AgentAttack
+/// et permet de redéfinir les méthodes d'attaque des lymphocytes T Cytotoxique.
+/// </summary>
 public class LTCytoAttack : AgentAttack {
 
 	public float dashForce = 500f;
@@ -11,6 +15,9 @@ public class LTCytoAttack : AgentAttack {
 		trail = GetComponent<TrailRenderer>();
 	}
 
+	/// <summary>
+	/// Méthode d'attaque de l'agent.
+	/// </summary>
 	protected override AgentLife Attack ()
 	{
 		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0 || myLife.currentLife == 0)
@@ -38,7 +45,6 @@ public class LTCytoAttack : AgentAttack {
 
 		trail.enabled = true;
 		myMovement.agentRigidbody.AddForce(dir * dashForce);
-		//myMovement.agentRigidbody.rotation += 180f;
 	
 		StartCoroutine(HideTrail());
 
@@ -50,6 +56,10 @@ public class LTCytoAttack : AgentAttack {
 		return enemyLife;
 	}
 
+	/// <summary>
+	/// Permet de cacher la trainée derrière l'agent.
+	/// </summary>
+	/// <returns>The trail.</returns>
 	IEnumerator HideTrail(){
 		yield return new WaitForSeconds(trail.time);
 		trail.enabled = false;

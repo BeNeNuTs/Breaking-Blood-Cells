@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// La classe AgentMovement permet de déplacer l'agent.
+/// </summary>
 public class AgentMovement : MonoBehaviour {
 
 	public float speed;
@@ -20,7 +23,9 @@ public class AgentMovement : MonoBehaviour {
 	public Boundary moveBoundaries;
 
 
-	// Use this for initialization
+	/// <summary>
+	/// Initialise la classe.
+	/// </summary>
 	void Awake () {
 		agentRigidbody = GetComponent<Rigidbody2D>();
 		targets = new List<GameObject>();
@@ -29,10 +34,11 @@ public class AgentMovement : MonoBehaviour {
 		moveBoundaries.xMax = 225;
 		moveBoundaries.yMin = -125;
 		moveBoundaries.yMax = 120;
-
 	}
 
-
+	/// <summary>
+	/// Vérifie ce qui entre dans le percepts de l'agent.
+	/// </summary>
 	protected virtual void OnTriggerEnter2D(Collider2D other){
 		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
 			if(!targets.Contains(other.gameObject)){
@@ -41,6 +47,9 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Vérifie ce qui sort dans le percepts de l'agent.
+	/// </summary>
 	protected virtual void OnTriggerExit2D(Collider2D other){
 		if(other.CompareTag(tagEnemy) && other.GetType() == typeof(BoxCollider2D)){
 			if(Vector3.Distance(transform.position, other.transform.position) >= GetComponent<CircleCollider2D>().radius){
@@ -48,16 +57,10 @@ public class AgentMovement : MonoBehaviour {
 			}
 		}
 	}
-
-	void OnCollisionEnter2D(Collision2D collision) {
-		/*if(collision.contacts.Length > 0){
-			Vector3 reflect = Vector3.Reflect(transform.forward, collision.contacts[0].normal);
-			Vector3 direction = new Vector3(reflect.x, 0, reflect.z);
-			transform.LookAt(direction);
-		}*/
-	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Vérifie l'état de l'agent et clamp sa position.
+	/// </summary>
 	protected virtual void Update () {
 
 
@@ -78,6 +81,9 @@ public class AgentMovement : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Déplacer l'agent vers l'ennemi le plus proche.
+	/// </summary>
 	protected virtual void GoToEnemy(){
 
 		UpdateList(targets);
@@ -98,9 +104,6 @@ public class AgentMovement : MonoBehaviour {
 			
 			float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 
-			//rotation = rot_z;
-			//agentRigidbody.rotation = rotation;
-
 			agentRigidbody.rotation = rot_z;
 			agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 		}else{
@@ -109,23 +112,23 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
-	/*public float ChangeRotation(float rot){
-		rotation += rot;
-		return rotation;
-	}*/
-
+	/// <summary>
+	/// Permet de faire avancer l'agent.
+	/// </summary>
 	protected virtual void Wiggle(){
 		if(targets.Count > 0){
 			agent.state = Agent.GOTOENEMY;
 			return;
 		}
 		// Faire avancer l'agent
-		//ChangeRotation(Random.Range(-wiggle,wiggle));
-		//agentRigidbody.rotation = rotation;
 		agentRigidbody.rotation += Random.Range(-wiggle,wiggle);
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
+	/// <summary>
+	/// Met à jour la liste passée en paramètre.
+	/// </summary>
+	/// <param name="list">Liste à vérifier.</param>
 	public void UpdateList(List<GameObject> list){
 		for(int i = 0 ; i < list.Count ; i++)
 		{
@@ -143,6 +146,11 @@ public class AgentMovement : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Retourne l'ennemi le plus proche dans la liste passée en paramètre.
+	/// </summary>
+	/// <returns>La cible la plus proche.</returns>
+	/// <param name="list">Liste d'ennemis.</param>
 	public GameObject GetClosestTarget(List<GameObject> list){
 		if(list.Count == 0){
 			return null;

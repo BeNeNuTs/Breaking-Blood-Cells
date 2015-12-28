@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// La classe MacrophageMovement hérite de la classe AgentMovement
+/// et permet de redéfinir les méthodes de mouvements des macrophages.
+/// </summary>
 public class MacrophageMovement : AgentMovement {
 
 	MacrophageAttack agentAttack;
@@ -11,6 +15,9 @@ public class MacrophageMovement : AgentMovement {
 		agentAttack = GetComponent<MacrophageAttack>();
 	}
 
+	/// <summary>
+	/// Vérifie l'état de l'agent.
+	/// </summary>
 	protected override void Update () {
 		base.Update();
 
@@ -19,6 +26,10 @@ public class MacrophageMovement : AgentMovement {
 		}
 	}
 
+	/// <summary>
+	/// Permet à l'agent d'aller vers les anticorps.
+	/// </summary>
+	/// <param name="antibody_position">Antibody_position.</param>
 	public void GoToAntibody(Vector3 antibody_position){
 		if(agent.state != Agent.WIGGLE){
 			return;
@@ -39,8 +50,10 @@ public class MacrophageMovement : AgentMovement {
 
 	}
 
+	/// <summary>
+	/// Permet de rapporter les résidus aux lymphocytes T Auxiliaire.
+	/// </summary>
 	void BringResidus(){
-
 
 		GameObject[] LT = GameObject.FindGameObjectsWithTag("LTAux");
 		LTAux = new List<GameObject>();
@@ -79,6 +92,10 @@ public class MacrophageMovement : AgentMovement {
 		agentRigidbody.velocity = new Vector2(transform.right.x, transform.right.y) * speed * Time.deltaTime;
 	}
 
+	/// <summary>
+	/// Permet de donner les résidus à un lymphocyte T Auxiliaire.
+	/// </summary>
+	/// <param name="LT">L.</param>
 	void GiveResidus(GameObject LT){
 		if(LT.GetComponent<LTAuxMovement>().TakeResidus(agentAttack.typeResidus)){
 			MacrophageAttack.residuesDone = true;

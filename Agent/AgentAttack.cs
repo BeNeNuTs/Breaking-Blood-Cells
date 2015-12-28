@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// La classe AgentAttack définie les différentes méthodes permettant aux
+/// agents d'attaquer.
+/// </summary>
 public class AgentAttack : MonoBehaviour {
 	
 	public float timeBetweenAttacks = 0.5f;
@@ -21,7 +25,10 @@ public class AgentAttack : MonoBehaviour {
 
 		agent = GetComponent<Agent>();
 	}
-	
+
+	/// <summary>
+	/// Vérifie l'état de l'agent pour le faire attaquer.
+	/// </summary>
 	protected virtual void Update ()
 	{
 		timer += Time.deltaTime;
@@ -31,14 +38,20 @@ public class AgentAttack : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Vérifie si l'agent peut attaquer.
+	/// </summary>
+	/// <returns><c>true</c>, si le timer est vérifié, <c>false</c> sinon.</returns>
 	public bool CheckTimer(){
 		return (timer > timeBetweenAttacks);
 	}
 	
-	
+	/// <summary>
+	/// Méthode d'attaque de l'agent.
+	/// </summary>
 	protected virtual AgentLife Attack ()
 	{
-		if(timer < timeBetweenAttacks || myMovement.targets.Count == 0 || myLife.currentLife == 0)
+		if(CheckTimer() || myMovement.targets.Count == 0 || myLife.currentLife == 0)
 		{
 			agent.state = Agent.WIGGLE;
 			return null;
